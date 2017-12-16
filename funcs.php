@@ -11,6 +11,7 @@ function get_parent_szakkol($post)
 function get_posts_for_szakkol($post_name, $post_type)
 {
 	    $args = array('post_type' => $post_type,
+		'posts_per_page'=>-1,
 	        'tax_query' => array(
 	            array(
 	                'taxonomy' => 'szakkoli',
