@@ -6,7 +6,7 @@ function ep_plugin_before_content($post) {
 
 $szakkol_format = <<<'EOT'
 <div class="project type-project status-publish has-post-thumbnail hentry et_pb_portfolio_item et_pb_grid_item">
-	<a href="http://elektoriparlament.hu/project/nyugdij/" title="Nyugdíj">
+	<a href="%1$s" title="%2$s"
 		<span class="et_portfolio_image">
 			%3$s<!-- image --!>
 			<span class="et_overlay"></span>
@@ -21,8 +21,14 @@ EOT;
 
 function ep_plugin_after_content($post) {
 global $szakkol_format;
-	echo '<div class="et_pb_column_4_4 et_pb_portfolio_grid">';
+	echo '<div class="et_pb_section et_section_regular">';
+	echo '<div class="et_pb_row">';
+	echo '<div class="et_pb_column_4_4">';
+	echo '<div class="et_pb_portfolio_grid clearfix et_pb_module et_pb_bg_layout_light ">';
 	list_assets_by_taxonomy($post,'szakkolegium', '<h2>Ide tartozó szakkolégiumok:</h2>','szakkoli', $szakkol_format);
+	echo '</div>';
+	echo '</div>';
+	echo '</div>';
 	echo '</div>';
 	list_assets_by_taxonomy($post,'post', '<h2>Programok:</h2>','szakkoli', '<a href="%s">%s</a><br>');
 	list_assets_by_taxonomy($post,'problem', '<h2>Problémafelvetések:</h2>','szakkoli', '<a href="%s">%s</a><br>');
