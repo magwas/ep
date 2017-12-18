@@ -55,15 +55,16 @@ function list_assets($post_name, $post_type, $header_string)
 
 function update_custom_terms($post_id) {
 
-  if ( 'szakkolegium' != get_post_type($post_id)) {
-    return;
+  $post_type = get_post_type($post_id);
+  $tax_type = '';
+  if ( 'szakkolegium' == $post_type) {
+    $tax_type='szakkoli';
+  } else if ( 'problem' == $post_type ) {
+    $tax_type='vita';
+  } else {
+	return;
   }
 
-  // don't create or update terms for system generated posts
-  if (get_post_status($post_id) == 'auto-draft') {
-    return;
-  }
-    
   /*
   * Grab the post title and slug to use as the new 
   * or updated term name and slug
@@ -75,7 +76,7 @@ function update_custom_terms($post_id) {
   * Check if a corresponding term already exists by comparing 
   * the post ID to all existing term descriptions. 
   */
-  $existing_terms = get_terms('szakkoli', array(
+  $existing_terms = get_terms($tax_type, array(
     'hide_empty' => false
     )
   );
@@ -83,7 +84,7 @@ function update_custom_terms($post_id) {
   foreach($existing_terms as $term) {
     if ($term->description == $post_id) {
       //term already exists, so update it and we're done
-      wp_update_term($term->term_id, 'szakkoli', array(
+      wp_update_term($term->term_id, $tax_type, array(
         'name' => $term_title,
         'slug' => $term_slug
         )
@@ -96,7 +97,7 @@ function update_custom_terms($post_id) {
   * If we didn't find a match above, this is a new post, 
   * so create a new term.
   */
-  wp_insert_term($term_title, 'szakkoli', array(
+  wp_insert_term($term_title, $tax_type, array(
     'slug' => $term_slug,
     'description' => $post_id
     )
