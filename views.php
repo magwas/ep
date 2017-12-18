@@ -28,4 +28,13 @@ global $szakkol_format;
 	list_assets_by_taxonomy($post,'problem', '<h2>Problémafelvetések:</h2>','szakkoli', '<a href="%s">%s</a><br>');
 	list_assets_by_taxonomy($post,'javaslat', '<h2>Megoldási javaslatok:</h2>','vita', '<a href="%s">%s</a><br>');
 }
+
+function ep_footer() {
+	$me= new eDemo_SSOauth_Base();
+	echo "<script type='text/javascript'>\n";
+	echo 'jQuery(".menu-item-735").click(function(){' . str_replace("javascript:","",$me->get_button_action('register')) . ";});\n";
+	echo 'jQuery(".menu-item-737").click(eDemo_SSO.adalogout);' . "\n";
+	echo "</script>\n";
+}
 ?>
+
