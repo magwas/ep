@@ -8,13 +8,13 @@ function get_parent_szakkol($post)
 	}
 }
 
-function get_posts_for_szakkol($post_name, $post_type)
+function get_child_by_taxonomy($post_name, $post_type, $tax_name)
 {
 	    $args = array('post_type' => $post_type,
 		'posts_per_page'=>-1,
 	        'tax_query' => array(
 	            array(
-	                'taxonomy' => 'szakkoli',
+	                'taxonomy' => $tax_name,
 	                'field' => 'slug',
 	                'terms' => $post_name,
 	            ),
@@ -24,32 +24,20 @@ function get_posts_for_szakkol($post_name, $post_type)
 	     return $loop;
 }
 
-function is_direct_child($parent_slug) {
-	$direct=0;
-	$defaults = array('fields' => 'names');
-	foreach(wp_get_object_terms(get_the_ID(), 'szakkoli', $args) as $term) {
-		if ($term->slug == $parent_slug) {
-			$direct = 1;
-		}
-	};
-	return $direct;
-}
 function list_posts_for($loop, $header_string, $parent_slug)
 {
 	if($loop->have_posts()) {
 		echo $header_string;
 		while($loop->have_posts()) : $loop->the_post();
-			if (is_direct_child($parent_slug)) {
-				echo '<a href="'.get_permalink().'">'.get_the_title().'</a><br>';
-			};
+			echo '<a href="'.get_permalink().'">'.get_the_title().'</a><br>';
 		endwhile;
 	}
 	wp_reset_postdata();
 }
 
-function list_assets($post_name, $post_type, $header_string)
+function list_assets_by_taxonomy($post_name, $post_type, $header_string, $tax_name)
 {
-	$loop = get_posts_for_szakkol($post_name, $post_type);
+	$loop = get_child_by_taxonomy($post_name, $post_type, $tax_name);
 	list_posts_for($loop, $header_string, $post_name);
 }
 
