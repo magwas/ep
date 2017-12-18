@@ -24,21 +24,21 @@ function get_child_by_taxonomy($post, $post_type, $tax_name)
 	     return $loop;
 }
 
-function list_posts_for($loop, $header_string)
+function list_posts_for($loop, $header_string, $fmt)
 {
 	if($loop->have_posts()) {
 		echo $header_string;
 		while($loop->have_posts()) : $loop->the_post();
-			echo '<a href="'.get_permalink().'">'.get_the_title().'</a><br>';
+			echo sprintf($fmt,get_permalink(), get_the_title(),get_the_post_thumbnail());
 		endwhile;
 	}
 	wp_reset_postdata();
 }
 
-function list_assets_by_taxonomy($post, $post_type, $header_string, $tax_name)
+function list_assets_by_taxonomy($post, $post_type, $header_string, $tax_name, $fmt)
 {
 	$loop = get_child_by_taxonomy($post, $post_type, $tax_name);
-	list_posts_for($loop, $header_string);
+	list_posts_for($loop, $header_string, $fmt);
 }
 
 function update_custom_terms($post_id) {
