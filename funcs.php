@@ -1,14 +1,14 @@
 <?php
-function get_parent_szakkol($post)
+function get_parent_by_taxonomy($post, $taxname, $fmt)
 {
-	$term_list = wp_get_post_terms($post->ID, 'szakkoli', array("fields" => "all"));
+	$term_list = wp_get_post_terms($post->ID, $taxname, array("fields" => "all"));
 
 	foreach($term_list as $term_single) {
-		echo 'A <a href="' . get_site_url() . '/szakkolegium/' . $term_single->slug . '">'. $term_single->name . '</a> alatt van.'; //do something here
+		echo sprintf($fmt, get_site_url(), $term_single->slug, $term_single->name);
 	}
 }
 
-function get_child_by_taxonomy($post_name, $post_type, $tax_name)
+function get_child_by_taxonomy($post, $post_type, $tax_name)
 {
 	    $args = array('post_type' => $post_type,
 		'posts_per_page'=>-1,
@@ -16,7 +16,7 @@ function get_child_by_taxonomy($post_name, $post_type, $tax_name)
 	            array(
 	                'taxonomy' => $tax_name,
 	                'field' => 'slug',
-	                'terms' => $post_name,
+	                'terms' => $post->post_name,
 	            ),
 	        ),
 	     );
@@ -24,7 +24,7 @@ function get_child_by_taxonomy($post_name, $post_type, $tax_name)
 	     return $loop;
 }
 
-function list_posts_for($loop, $header_string, $parent_slug)
+function list_posts_for($loop, $header_string)
 {
 	if($loop->have_posts()) {
 		echo $header_string;
@@ -35,10 +35,10 @@ function list_posts_for($loop, $header_string, $parent_slug)
 	wp_reset_postdata();
 }
 
-function list_assets_by_taxonomy($post_name, $post_type, $header_string, $tax_name)
+function list_assets_by_taxonomy($post, $post_type, $header_string, $tax_name)
 {
-	$loop = get_child_by_taxonomy($post_name, $post_type, $tax_name);
-	list_posts_for($loop, $header_string, $post_name);
+	$loop = get_child_by_taxonomy($post, $post_type, $tax_name);
+	list_posts_for($loop, $header_string);
 }
 
 function update_custom_terms($post_id) {
