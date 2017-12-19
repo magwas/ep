@@ -10,4 +10,5 @@
 
 require 'funcs.php';
 require 'views.php';
+require 'poll.php';
 ?>
