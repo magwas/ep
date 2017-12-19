@@ -19,7 +19,7 @@ EOT;
 	
 	const ALTERNATIVE_ROW = <<<'EOT'
             <tr class="ep_vote_alternative_row" onclick="select_row(this, event.shiftKey||event.ctrlKey);">
-                <td class="choice">%s</td>
+                <td class="choice">%s (<a href="/%2$s" target="_blank">...</a>)</td>
                 <td class="choice_rank"><select size="1" name="%s" onchange="sort_rows()">
 %s
                 </select></td>
@@ -55,7 +55,7 @@ EOT;
 		    </td></tr></table>
 		    </td>
 	</tr>
-	<tr><td style="height: 100%"><input id="vote" type="submit" value="Rangsor megadása" name="Vote" /></td></tr>
+	<tr><td style="height: 100%"><input id="vote" type="submit" value="Leadom a szavazatot" name="Vote" /></td></tr>
 	</table>
 	</form>
 	</div>
@@ -67,12 +67,21 @@ EOT;
 	        if( ! is_feed() ) {
 			$form = sprintf(self::FORM_HEADER, get_the_id($post));
 			$kids = ElektoriParlament::get_child_by_taxonomy($post, 'javaslat', 'vita');
+			$count=$kids->post_count;
+			$optstring = "";
+			for ($x = 1; $x <= $count +1; $x++) {
+				if($x == $count) {
+					$optstring .= sprintf('<option value="%1$s" label="%1$s" selected="selected">%1$s</option>',$x);
+				} else {
+					$optstring .= sprintf('<option value="%1$s" label="%1$s">%1$s</option>',$x);
+				}
+			} 
 			while($kids->have_posts()) {
 				$kids->the_post();
-				$form .= sprintf(self::ALTERNATIVE_ROW, get_the_title(), $post->post_name,'AAA');
+				$form .= sprintf(self::ALTERNATIVE_ROW, get_the_title(), $post->post_name, $optstring);
 			}
+			$form .= sprintf(self::ALTERNATIVE_ROW, 'A többit ellenzem', 'dummy_default', $optstring);
 			wp_reset_postdata();
-			$count=$kids->post_count;
 			$form .= self::FORM_FOOTER;
 	                return $form;
 	        } else {

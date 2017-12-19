@@ -38,8 +38,9 @@ function ep_plugin_after_content($post) {
 function ep_footer() {
 	$me= new eDemo_SSOauth_Base();
 	echo "<script type='text/javascript'>\n";
-	echo 'jQuery(".menu-item-735").click(function(){' . str_replace("javascript:","",$me->get_button_action('register')) . ";});\n";
-	echo 'jQuery(".menu-item-737").click(eDemo_SSO.adalogout);' . "\n";
+	echo 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace("javascript:","",$me->get_button_action('register')) . ";});\n";
+	echo 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n";
+	echo 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action('register') . '"};';
 	echo "</script>\n";
 }
 ?>
