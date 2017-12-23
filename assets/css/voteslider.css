@@ -1,0 +1,121 @@
+input[type="range"].multirange {
+	position: absolute;
+	top: 0px;
+	margin: 0;
+	display: inline-block;
+	vertical-align: top;
+	writing-mode: bt-lr; /* IE */
+	-webkit-appearance: slider-vertical; /* WebKit */
+	padding: 0 5px;
+	height: 100%;
+}
+
+
+input[type="range"].multirange::-webkit-slider-thumb {
+	position: relative;
+	height: 40px; /*should be same as .vote-alterative.height! */
+	z-index: 2;
+}
+
+input[type="range"].multirange::-moz-range-thumb {
+	transform: scale(1); /* FF doesn't apply position it seems */
+	height: 40px; /*should be same as .vote-alterative.height! */
+	z-index: 1;
+}
+
+input[type="range"].multirange::-ms-thumb {
+	position: relative;
+	height: 40px; /*should be same as .vote-alterative.height! */
+	z-index: 1;
+}
+
+
+input[type="range"].multirange::-moz-range-track {
+	border-color: transparent; /* needed to switch FF to "styleable" control */
+}
+
+.vote-container {
+	height: 300px;
+	width: 500px;
+	position: relative;
+	color: black;
+}
+.vote-form {
+	display: table;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.vote-background {
+	width:100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: table;
+}
+
+.vote-background-best {
+	height: 40px; /*should be same as .vote-alterative.height!*/
+	background-color: #9FEBAB;
+	display: table-row;
+}
+.vote-background-good {
+	background-color: #ACFFBA;
+	display: table-row;
+}
+.vote-background-none {
+	height: 40px; /*should be same as .vote-alterative.height! */
+	background-color: grey;
+	display: table-row;
+}
+.vote-background-bad {
+	background-color: #FFCDCD;
+	display: table-row;
+}
+.vote-background-badest {
+	height: 40px; /*should be same as .vote-alterative.height! */
+	background-color: #FFC0C0;
+	display: table-row;
+}
+
+.vote-alternatives {
+	height: 100%;
+	display: table-cell;
+}
+.vote-alternative {
+	position:absolute;
+	background-color: blue;
+	z-index: 3;
+	left: 0;
+	right: 20px;
+	height: 40px;
+	border-radius: 20px;
+}
+.vote-dummy {
+	position: relative;
+	width: 100%;
+	height: 40px; /*should be same as .vote-alterative.height! */
+	top: 0px;
+}
+.vote-sliderbox {
+	height: 100%;
+	width: 20px; /* should be same as .vote-alterative.right! */
+	display: table-cell;
+}
+.vote-choicetext {
+	position: relative;
+	float: left;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+}
+.vote-bgtext {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}

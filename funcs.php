@@ -96,16 +96,10 @@ class ElektoriParlament {
 	  );
 	}
 
-	function enqueue_scripts() {
-		wp_enqueue_script('ep-vote', plugin_dir_url( __FILE__ ) . 'assets/js/vote.js', array('jquery', 'jquery-ui-sortable'), EP_VERSION, true);
-		wp_enqueue_script('ep-ezdom', plugin_dir_url( __FILE__ ) . 'assets/js/ezdom.js', 'jquery', EP_VERSION, false);
-	}
-	
 }
 
 //run the update function whenever a post is created or edited
 add_action('save_post', Array('ElektoriParlament','update_custom_terms'));
-add_action('wp_enqueue_scripts', Array('ElektoriParlament','enqueue_scripts'));
 
 
 ?>
