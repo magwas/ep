@@ -70,7 +70,7 @@ EOT;
 			echo sprintf(self::GET_ASSURANCE,$name);
 			return;
 		}
-		echo sprintf("Tag vagy, %s.",$user->user_nicename);
+		echo sprintf("Tag vagy, %s.",$name);
 	}
 
 	function accept_rules() {
