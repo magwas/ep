@@ -2,6 +2,8 @@
 
 define( 'EP_VERSION', '0.1.0' );
 
+require('dashboard.php');
+
 class ElektoriParlament {
 	function get_parent_by_taxonomy($post, $taxname, $fmt)
 	{
@@ -94,6 +96,10 @@ class ElektoriParlament {
 	    'description' => $post_id
 	    )
 	  );
+	}
+
+	function show_dashboard() {
+		Dashboard::show_dashboard();
 	}
 
 }

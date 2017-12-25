@@ -2,6 +2,7 @@
 function ep_plugin_before_content($post) {
 	ElektoriParlament::get_parent_by_taxonomy($post, 'szakkoli', 'A <a href="%s/szakkolegium/%s">%s</a> alatt van.');
 	ElektoriParlament::get_parent_by_taxonomy($post, 'vita', 'A <a href="%s/problem/%s">%s</a> megoldási javaslata.');
+	ElektoriParlament::show_dashboard();
 }
 
 $szakkol_format = <<<'EOT'
@@ -39,6 +40,7 @@ function ep_footer() {
 	$me= new eDemo_SSOauth_Base();
 	echo "<script type='text/javascript'>\n";
 	echo 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace("javascript:","",$me->get_button_action('register')) . ";});\n";
+	echo 'jQuery("#login_button").click(function(){' . str_replace("javascript:","",$me->get_button_action('register')) . ";});\n";
 	echo 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n";
 	echo 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action('register') . '"};';
 	echo "</script>\n";
