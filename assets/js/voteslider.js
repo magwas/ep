@@ -1,5 +1,5 @@
 
-var voteForm = '<div class="vote-background">'+
+var voteForm = '<div class="vote-container" id="vote-container-{0}"><div class="vote-background">'+
 '		<div class="vote-background-best"><div class="vote-bgtext">Legjobb</div></div>'+
 '		<div class="vote-background-good"><div class="vote-bgtext">Elfogadható</div></div>'+
 '		<div class="vote-background-none"><div class="vote-dummy"><div class="vote-choicetext">A lentieket ellenzem:</div></div></div>'+
@@ -11,7 +11,8 @@ var voteForm = '<div class="vote-background">'+
 '		</div>'+
 '		<div class="vote-sliderbox" id="vote-sliderbox-{0}">'+
 '		</div>'+
-'	</div>';
+'	</div></div>'+
+'	<button onclick="javascript:submitVote(\'{0}\')" type="button">Szavazok</button>';
 
 if (!String.prototype.format) {
   String.prototype.format = function() {
@@ -77,6 +78,7 @@ function VoteSlider(id, choices) {
 			slider.setAttribute('min', 0);
 			slider.setAttribute('value', value);
 			self.sliderParent.appendChild(slider);
+			choices[slug].slider = slider;
 			choiceDiv = document.createElement('div');
 			choiceDiv.innerHTML = '<div class="vote-choicetext">{0}</div>'.format(name);
 			choiceDiv.classList.add("vote-alternative");
@@ -87,10 +89,10 @@ function VoteSlider(id, choices) {
 			choiceDiv.addEventListener("mousedown", dragStart(choiceDiv,slider));
 	}
 	function initDom() {
-		parent = document.getElementById(id);
+		origElement = document.getElementById(id);
+		origElement.innerHTML = voteForm.format(id);
+		parent = document.getElementById("vote-container-"+id);
 		self.parent = parent;
-		parent.classList.add("vote-container");
-		parent.innerHTML = voteForm.format(id);
 		self.allHeight = parent.clientHeight;
 		self.alternativeHeight = 40;//in css, multiple places
 		self.multiplier = (self.allHeight - self.alternativeHeight)/self.allHeight;
@@ -102,6 +104,22 @@ function VoteSlider(id, choices) {
 		}
 	}
 
+	self.submitVote = function() {
+		var data = {};
+		var query = {
+			'action' : 'ep_vote_submit',
+		};
+		for(slug in choices) {
+			data[slug] = choices[slug].slider.value;	
+		}
+		data['dummy'] = self.allHeight / 2;
+		self.data=data;
+		query['data'] = JSON.stringify(data);
+		console.log(query);
+		jQuery.post('/wp-admin/admin-ajax.php', query, function(response) {
+			console.log('Got this from the server: ' + response);
+		});
+	}
 	if (document.readyState == "loading") {
 		document.addEventListener("DOMContentLoaded", initDom);
 	} else {

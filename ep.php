@@ -11,5 +11,4 @@
 require 'funcs.php';
 require 'views.php';
 require 'poll.php';
-require 'greeting_email.php';
 ?>

@@ -39,9 +39,16 @@ EOT;
 		wp_enqueue_script('ep-vote', plugin_dir_url( __FILE__ ) . 'assets/js/voteslider.js', array(), EP_VERSION, false);
 		wp_enqueue_style( 'ep-vote-css', plugin_dir_url( __FILE__ ) . 'assets/css/voteslider.css' );
 	}
+
+	function vote_submit() {
+		echo "hello!";
+		echo $_POST['data'];
+		wp_die();
+	}
 	
 }
 
 add_action('wp_enqueue_scripts', Array('ElektoriParlament_Vote','enqueue_scripts'));
 add_shortcode( 'vote', Array('ElektoriParlament_Vote', 'vote_shortcode') );
+add_action('wp_ajax_ep_vote_submit',  Array('ElektoriParlament_Vote', 'vote_submit'));
 ?>
