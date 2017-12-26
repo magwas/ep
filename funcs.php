@@ -2,7 +2,7 @@
 
 define( 'EP_VERSION', '0.1.0' );
 
-require('dashboard.php');
+require('Dashboard.php');
 
 class ElektoriParlament {
 	function get_parent_by_taxonomy($post, $taxname, $fmt)

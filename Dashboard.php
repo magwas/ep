@@ -34,6 +34,9 @@ EOT;
 	const GET_ASSURANCE = <<<'EOT'
 Kedves %s, még nem vagy tag, <a href="regisztracio" target="blank">szerezz "magyar" igazolást!</a>
 EOT;
+	const YOU_ARE_MEMBER = <<<'EOT'
+Tag vagy, %s!
+EOT;
 
 	function unauthenticated($user) {
 		return $user->ID == 0;
@@ -41,7 +44,7 @@ EOT;
 
 	function has_assurance($user) {
 		$assurances = get_user_meta($user->ID, 'eDemoSSO_assurances');
-		return in_array('["magyar"]', $assurances);
+		return is_array($assurances) && in_array('["magyar"]', $assurances);
 	}
 
 	function did_accept($user) {
@@ -70,7 +73,7 @@ EOT;
 			echo sprintf(self::GET_ASSURANCE,$name);
 			return;
 		}
-		echo sprintf("Tag vagy, %s.",$name);
+		echo sprintf(self::YOU_ARE_MEMBER,$name);
 	}
 
 	function accept_rules() {
