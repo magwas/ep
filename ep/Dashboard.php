@@ -44,7 +44,7 @@ EOT;
 
 	function has_assurance($user) {
 		$assurances = get_user_meta($user->ID, 'eDemoSSO_assurances');
-		return is_array($assurances) && in_array('["magyar"]', $assurances);
+		return is_array($assurances) && (in_array('["magyar"]', $assurances) || in_array('["emagyar"]', $assurances));
 	}
 
 	function did_accept($user) {
