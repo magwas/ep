@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-require 'WPFakes.php';
+include_once 'WPFakes.php';
 
 include_once 'ep/Dashboard.php';
 

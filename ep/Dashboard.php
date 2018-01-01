@@ -1,7 +1,5 @@
 <?php
 
-define( 'EP_VERSION', '0.1.0' );
-
 class Dashboard {
 
 	const DASHBOARD_HEADER = <<<'EOT'

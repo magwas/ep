@@ -6,12 +6,17 @@ class WPFakes
 
 	public static $user;
 	public static $actions;
+	public static $shortcodes;
 	public static $usermeta;
 	public static $oldmeta;
 	public static $died=false;
+	public static $is_feed=false;
 
 	public function add_action($name, $action) {
 		self::$actions[$name] = $action;
+	}
+	public function add_shortcode($name, $action) {
+		self::$shortcodes[$name] = $action;
 	}
 	public function get_user_meta($userid, $key) {
 		if (!array_key_exists($userid,self::$usermeta)) return;
@@ -31,6 +36,9 @@ class WPFakes
 function add_action($name,$action) {
 	WPFakes::add_action($name,$action);
 }
+function add_shortcode($name,$action) {
+	WPFakes::add_shortcode($name,$action);
+}
 
 function get_user_meta($user,$key) {
 	return WPFakes::get_user_meta($user,$key);
@@ -45,6 +53,10 @@ function update_user_meta($id, $key, $value) {
 }
 function wp_die() {
 	return WPFakes::wp_die();
+}
+
+function is_feed() {
+	return WPFakes::$is_feed;
 }
 
 ?>

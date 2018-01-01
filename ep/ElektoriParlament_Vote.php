@@ -1,5 +1,6 @@
 <?php
 
+include_once 'ElektoriParlament.php';
 
 class ElektoriParlament_Vote {
 	const FORM_HTML = <<<'EOT'
