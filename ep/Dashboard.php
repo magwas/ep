@@ -36,27 +36,27 @@ EOT;
 Tag vagy, %s!
 EOT;
 
-	function unauthenticated($user) {
+	static function unauthenticated($user) {
 		return $user->ID == 0;
 	}
 
-	function has_assurance($user) {
+	static function has_assurance($user) {
 		$assurances = get_user_meta($user->ID, 'eDemoSSO_assurances');
 		return is_array($assurances) && (in_array('["magyar"]', $assurances) || in_array('["emagyar"]', $assurances));
 	}
 
-	function did_accept($user) {
+	static function did_accept($user) {
 		$accepted = get_user_meta($user->ID, 'accepted_the_rules', true);
 		return $accepted;
 	}
 
-	function show_dashboard() {
+	static function show_dashboard() {
 		echo self::DASHBOARD_HEADER;
 		self::show_dashboard_content();
 		echo self::DASHBOARD_FOOTER;
 	}
 
-	function show_dashboard_content() {
+	static function show_dashboard_content() {
 		$user = wp_get_current_user();
 		if (self::unauthenticated($user)) {
 			echo self::LOGIN;
@@ -74,7 +74,7 @@ EOT;
 		echo sprintf(self::YOU_ARE_MEMBER,$name);
 	}
 
-	function accept_rules() {
+	static function accept_rules() {
 		$user = wp_get_current_user();
 		update_user_meta( $user->ID, 'accepted_the_rules', 1);
 		echo 'user=' . $user->ID;
