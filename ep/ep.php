@@ -11,4 +11,4 @@
 include_once 'ElektoriParlament.php';
 include_once 'views.php';
 include_once 'ElektoriParlament_Vote.php';
-?>
+

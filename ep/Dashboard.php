@@ -29,24 +29,24 @@ function accept_rules() {
 Kedves %s, még nem vagy tag, ehhez el kell fogadnod a szabályainkat.<br\>
 <button onclick="javascript:accept_rules()">Efogadom a szabályokat</button>
 EOT;
-	const GET_ASSURANCE = <<<'EOT'
+	const GET_ASSURANCE    = <<<'EOT'
 Kedves %s, még nem vagy tag, <a href="regisztracio" target="blank">szerezz "magyar" igazolást!</a>
 EOT;
-	const YOU_ARE_MEMBER = <<<'EOT'
+	const YOU_ARE_MEMBER   = <<<'EOT'
 Tag vagy, %s!
 EOT;
 
-	static function unauthenticated($user) {
+	static function unauthenticated( $user ) {
 		return $user->ID == 0;
 	}
 
-	static function has_assurance($user) {
-		$assurances = get_user_meta($user->ID, 'eDemoSSO_assurances');
-		return is_array($assurances) && (in_array('["magyar"]', $assurances) || in_array('["emagyar"]', $assurances));
+	static function has_assurance( $user ) {
+		$assurances = get_user_meta( $user->ID, 'eDemoSSO_assurances' );
+		return is_array( $assurances ) && ( in_array( '["magyar"]', $assurances ) || in_array( '["emagyar"]', $assurances ) );
 	}
 
-	static function did_accept($user) {
-		$accepted = get_user_meta($user->ID, 'accepted_the_rules', true);
+	static function did_accept( $user ) {
+		$accepted = get_user_meta( $user->ID, 'accepted_the_rules', true );
 		return $accepted;
 	}
 
@@ -58,31 +58,31 @@ EOT;
 
 	static function show_dashboard_content() {
 		$user = wp_get_current_user();
-		if (self::unauthenticated($user)) {
+		if ( self::unauthenticated( $user ) ) {
 			echo self::LOGIN;
 			return;
 		}
 		$name = $user->display_name;
-		if(!self::did_accept($user)) {
-			echo sprintf(self::ACCEPT_THE_RULES,$name);
+		if ( ! self::did_accept( $user ) ) {
+			echo sprintf( self::ACCEPT_THE_RULES, $name );
 			return;
 		}
-		if (!self::has_assurance($user)) {
-			echo sprintf(self::GET_ASSURANCE,$name);
+		if ( ! self::has_assurance( $user ) ) {
+			echo sprintf( self::GET_ASSURANCE, $name );
 			return;
 		}
-		echo sprintf(self::YOU_ARE_MEMBER,$name);
+		echo sprintf( self::YOU_ARE_MEMBER, $name );
 	}
 
 	static function accept_rules() {
 		$user = wp_get_current_user();
-		update_user_meta( $user->ID, 'accepted_the_rules', 1);
+		update_user_meta( $user->ID, 'accepted_the_rules', 1 );
 		echo 'user=' . $user->ID;
-		echo 'accepted=' . get_user_meta($user->ID,  'accepted_the_rules', true ) ;
+		echo 'accepted=' . get_user_meta( $user->ID, 'accepted_the_rules', true );
 		wp_die();
 	}
 
 }
 
-add_action('wp_ajax_ep_accept_rules',Array('Dashboard','accept_rules'));
-?>
+add_action( 'wp_ajax_ep_accept_rules', array( 'Dashboard', 'accept_rules' ) );
+
