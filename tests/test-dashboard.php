@@ -1,13 +1,22 @@
-<?php
-declare(strict_types=1);
+<?php // phpcs:disable Squiz.Commenting
 
 use PHPUnit\Framework\TestCase;
 
-class DashboardTest extends WP_UnitTestCase {
+include_once 'ep/class-dashboard.php';
+
+class DashboardTest extends TestCase {
 
 
 	public function setUp() {
 		parent::setUp();
+        $this->dashboard=new Dashboard();
+        $this->user = new MockUser();
+        WP_Mock::userFunction('wp_get_current_user', Array(
+            'return' => $this->user
+        ));
+        WP_Mock::userFunction('get_user_meta', Array(
+            'return' => $this->user->get_meta()
+        ));
 	}
 
 	public function testShowUnauthenticated() {
@@ -16,61 +25,53 @@ class DashboardTest extends WP_UnitTestCase {
 			Dashboard::LOGIN .
 			Dashboard::DASHBOARD_FOOTER
 		);
-		Dashboard::show_dashboard();
+		$this->dashboard->show_dashboard();
 	}
 
 	public function testShowAuthenticatedNoAccept() {
-		$user = $this->factory->user->create();
-		wp_set_current_user( $user );
 		$this->expectOutputString(
 			Dashboard::DASHBOARD_HEADER .
 			sprintf( Dashboard::ACCEPT_THE_RULES, wp_get_current_user()->display_name ) .
 			Dashboard::DASHBOARD_FOOTER
 		);
-		Dashboard::show_dashboard();
+		$this->dashboard->show_dashboard();
 	}
 	public function testShowAcceptNoAssurance() {
-		$user = $this->factory->user->create();
-		update_user_meta( $user, 'accepted_the_rules', 1 );
-		wp_set_current_user( $user );
+		$this->user->update_meta('accepted_the_rules', 1 );
 		$this->expectOutputString(
 			Dashboard::DASHBOARD_HEADER .
 			sprintf( Dashboard::GET_ASSURANCE, wp_get_current_user()->display_name ) .
 			Dashboard::DASHBOARD_FOOTER
 		);
-		Dashboard::show_dashboard();
+		$this->dashboard->show_dashboard();
 	}
 	public function testShowAcceptAndEmagyarAssurance() {
-		$user = $this->factory->user->create();
-		update_user_meta( $user, 'accepted_the_rules', 1 );
-		update_user_meta( $user, 'eDemoSSO_assurances', '["emagyar"]' );
+		$this->user->update_meta('accepted_the_rules', 1 );
+		$this->user->update_meta( $user, 'eDemoSSO_assurances', '["emagyar"]' );
 		wp_set_current_user( $user );
 		$this->expectOutputString(
 			Dashboard::DASHBOARD_HEADER .
 			sprintf( Dashboard::YOU_ARE_MEMBER, wp_get_current_user()->display_name ) .
 			Dashboard::DASHBOARD_FOOTER
 		);
-		Dashboard::show_dashboard();
+		$this->dashboard->show_dashboard();
 	}
 	public function testShowAcceptAndAssurance() {
-		$user = $this->factory->user->create();
-		update_user_meta( $user, 'accepted_the_rules', 1 );
-		update_user_meta( $user, 'eDemoSSO_assurances', '["magyar"]' );
-		wp_set_current_user( $user );
+		$this->user->update_meta( $user, 'accepted_the_rules', 1 );
+		$this->user->update_meta( $user, 'eDemoSSO_assurances', '["magyar"]' );
 		$this->expectOutputString(
 			Dashboard::DASHBOARD_HEADER .
 			sprintf( Dashboard::YOU_ARE_MEMBER, wp_get_current_user()->display_name ) .
 			Dashboard::DASHBOARD_FOOTER
 		);
-		Dashboard::show_dashboard();
+		$this->dashboard->show_dashboard();
 	}
 	public function testAcceptRules() {
-		$user = $this->factory->user->create();
-		wp_set_current_user( $user );
+		$this->user->update_meta( $user );
 		$this->assertEquals( array(), get_user_meta( $user, 'accepted_the_rules' ) );
 		$this->expectOutputString( 'user=' . $user . 'accepted=1' );
 		$this->setExpectedException( 'WPDieException' );
-		Dashboard::accept_rules();
+		$this->dashboard->accept_rules();
 		$this->assertEquals( 1, get_user_meta( $user, 'accepted_the_rules' ) );
 	}
 

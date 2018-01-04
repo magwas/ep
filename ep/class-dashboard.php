@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:disable Squiz.Commenting
 
 class Dashboard {
 
@@ -10,7 +10,7 @@ EOT;
 EOT;
 
 	const LOGIN = <<<'EOT'
-<button id="login_button">Jelentkezz be!</button>
+Ha szeretnél tagként résztvenni, <button id="login_button">Jelentkezz be!</button>
 EOT;
 
 	const ACCEPT_THE_RULES = <<<'EOT'
@@ -30,59 +30,51 @@ Kedves %s, még nem vagy tag, ehhez el kell fogadnod a szabályainkat.<br\>
 <button onclick="javascript:accept_rules()">Efogadom a szabályokat</button>
 EOT;
 	const GET_ASSURANCE    = <<<'EOT'
-Kedves %s, még nem vagy tag, <a href="regisztracio" target="blank">szerezz "magyar" igazolást!</a>
+Kedves %s, a regisztrálásod sikerült, már csak egy lépés van hátra: <a href="/hogyan-szerzek-magyar-vagy-emagyar-igazolast" target="blank">szerezz "magyar" vagy "emagyar" igazolást!</a>
 EOT;
 	const YOU_ARE_MEMBER   = <<<'EOT'
 Tag vagy, %s!
 EOT;
 
-	static function unauthenticated( $user ) {
-		return $user->ID == 0;
+    function init() {
+    }
+	function unauthenticated( $user ) {
+		return 0 == $user->ID;
 	}
 
-	static function has_assurance( $user ) {
+	function has_assurance( $user ) {
 		$assurances = get_user_meta( $user->ID, 'eDemoSSO_assurances' );
 		return is_array( $assurances ) && ( in_array( '["magyar"]', $assurances ) || in_array( '["emagyar"]', $assurances ) );
 	}
 
-	static function did_accept( $user ) {
+	function did_accept( $user ) {
 		$accepted = get_user_meta( $user->ID, 'accepted_the_rules', true );
 		return $accepted;
 	}
 
-	static function show_dashboard() {
+	function show_dashboard() {
 		echo self::DASHBOARD_HEADER;
-		self::show_dashboard_content();
+		$this->show_dashboard_content();
 		echo self::DASHBOARD_FOOTER;
 	}
 
-	static function show_dashboard_content() {
+	function show_dashboard_content() {
 		$user = wp_get_current_user();
-		if ( self::unauthenticated( $user ) ) {
+		if ( $this->unauthenticated( $user ) ) {
 			echo self::LOGIN;
 			return;
 		}
 		$name = $user->display_name;
-		if ( ! self::did_accept( $user ) ) {
+		if ( ! $this->did_accept( $user ) ) {
 			echo sprintf( self::ACCEPT_THE_RULES, $name );
 			return;
 		}
-		if ( ! self::has_assurance( $user ) ) {
+		if ( ! $this->has_assurance( $user ) ) {
 			echo sprintf( self::GET_ASSURANCE, $name );
 			return;
 		}
 		echo sprintf( self::YOU_ARE_MEMBER, $name );
 	}
 
-	static function accept_rules() {
-		$user = wp_get_current_user();
-		update_user_meta( $user->ID, 'accepted_the_rules', 1 );
-		echo 'user=' . $user->ID;
-		echo 'accepted=' . get_user_meta( $user->ID, 'accepted_the_rules', true );
-		wp_die();
-	}
-
 }
-
-add_action( 'wp_ajax_ep_accept_rules', array( 'Dashboard', 'accept_rules' ) );
 

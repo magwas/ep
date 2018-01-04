@@ -1,20 +1,19 @@
-<?php
+<?php // phpcs:disable Squiz.Commenting
 
-define( 'EP_VERSION', '0.1.0' );
-
-include_once 'Dashboard.php';
-
-class ElektoriParlament {
-	function get_parent_by_taxonomy( $post, $taxname, $fmt ) {
-		$term_list = wp_get_post_terms( $post->ID, $taxname, array( 'fields' => 'all' ) );
-
+class Structures {
+    function __construct() {
+        global $EP_WORLDPRESS_INTERFACE;
+        $this->WP = & $EP_WORLDPRESS_INTERFACE;
+    }
+	public function get_parent_by_taxonomy( $post, $taxname, $fmt ) {
+		$term_list = $this->WP->wp_get_post_terms( $post->ID, $taxname, array( 'fields' => 'all' ) );
 		foreach ( $term_list as $term_single ) {
-			echo sprintf( $fmt, get_site_url(), $term_single->slug, $term_single->name );
+			$this->WP->echo(sprintf( $fmt, $this->WP->get_site_url(), $term_single->slug, $term_single->name ));
 		}
 	}
 
-	function get_child_by_taxonomy( $post, $post_type, $tax_name ) {
-			$args  = array(
+	private function get_child_by_taxonomy( $post, $post_type, $tax_name ) {
+			$args = array(
 				'post_type'      => $post_type,
 				'posts_per_page' => -1,
 				'tax_query'      => array(
@@ -25,24 +24,28 @@ class ElektoriParlament {
 					),
 				),
 			);
-			 $loop = new WP_Query( $args );
-			 return $loop;
+			$loop = $this->WP->WP_Query( $args );
+			return $loop;
 	}
 
-	function list_posts_for( $loop, $header_string, $fmt ) {
+	private function list_posts_for( $loop, $header_string, $fmt ) {
 		if ( $loop->have_posts() ) {
-			echo $header_string;
+			$this->WP->echo($header_string);
 			while ( $loop->have_posts() ) :
 				$loop->the_post();
-				echo sprintf( $fmt, get_permalink(), get_the_title(), get_the_post_thumbnail() );
+				$this->WP->echo(sprintf( $fmt,
+						$this->WP->get_permalink(),
+						$this->WP->get_the_title(),
+						$this->WP->get_the_post_thumbnail()
+						));
 			endwhile;
 		}
-		wp_reset_postdata();
+		$this->WP->wp_reset_postdata();
 	}
 
-	function list_assets_by_taxonomy( $post, $post_type, $header_string, $tax_name, $fmt ) {
-		$loop = self::get_child_by_taxonomy( $post, $post_type, $tax_name );
-		self::list_posts_for( $loop, $header_string, $fmt );
+	public function list_assets_by_taxonomy( $post, $post_type, $header_string, $tax_name, $fmt ) {
+		$loop = $this->get_child_by_taxonomy( $post, $post_type, $tax_name );
+		$this->list_posts_for( $loop, $header_string, $fmt );
 	}
 
 	function update_custom_terms( $post_id ) {
@@ -103,10 +106,9 @@ class ElektoriParlament {
 		Dashboard::show_dashboard();
 	}
 
+	function init() {
+		$this->WP->add_action( 'save_post', array( $this, 'update_custom_terms' ) );
+	}
+
 }
-
-// run the update function whenever a post is created or edited
-add_action( 'save_post', array( 'ElektoriParlament', 'update_custom_terms' ) );
-
-
 

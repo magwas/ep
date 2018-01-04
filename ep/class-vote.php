@@ -1,8 +1,6 @@
-<?php
+<?php // phpcs:disable Squiz.Commenting
 
-include_once 'ElektoriParlament.php';
-
-class ElektoriParlament_Vote {
+class Vote {
 	const FORM_HTML = <<<'EOT'
 	<form id="%1$s">
 	<script>
@@ -16,10 +14,14 @@ EOT;
 		'%2$s' : { 'name': '%1$s (<a href="/%2$s" target="_blank">...</a>)'},
 EOT;
 	// label="egyik sem", slug="C2"
+
+	function __construct( $structures ) {
+		$this -> structures = $structures;
+	}
 	function vote_shortcode() {
 		global $post;
 		if ( ! is_feed() ) {
-			$kids  = ElektoriParlament::get_child_by_taxonomy( $post, 'javaslat', 'vita' );
+			$kids  = $this->structures->get_child_by_taxonomy( $post, 'javaslat', 'vita' );
 			$count = $kids->post_count;
 			$rows  = '';
 			while ( $kids->have_posts() ) {
@@ -45,9 +47,11 @@ EOT;
 		wp_die();
 	}
 
-}
+	function init() {
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_shortcode( 'vote', array( $this, 'vote_shortcode' ) );
+		add_action( 'wp_ajax_ep_vote_submit', array( $this, 'vote_submit' ) );
+	}
 
-add_action( 'wp_enqueue_scripts', array( 'ElektoriParlament_Vote', 'enqueue_scripts' ) );
-add_shortcode( 'vote', array( 'ElektoriParlament_Vote', 'vote_shortcode' ) );
-add_action( 'wp_ajax_ep_vote_submit', array( 'ElektoriParlament_Vote', 'vote_submit' ) );
+}
 
