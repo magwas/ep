@@ -3,54 +3,14 @@
 
 require_once 'ep/class-structures.php';
 require_once 'tests/class-wptestcase.php';
+require_once 'tests/class-testdata.php';
 
-class ElektoriparlamentVoteTest extends WPTestCase {
-
+class ElektoriparlamentStructuresTest extends WPTestCase {
 
 	public function setUp() {
 		parent::setUp();
         $this->instance = new Structures();
-        $this->setData(array(
-            'posts' => array(
-                1 => array(
-                    'slug' => 'vote',
-                    'title' => 'title_1',
-                	'thumbnail' => '/thumbnail_1.png',
-                    'type' => 'problem'
-                ),
-                2 => array(
-                    'slug' => 'slug_2',
-                    'title' => 'title_2',
-                    'type' => 'solution',
-                	'thumbnail' => '/thumbnail_2.png',
-                	'terms' => array('szakkolegium' => array(new FakeTerm('vote', 'A vote')))
-                ),
-                3 => array(
-                    'slug' => 'slug_3',
-                    'title' => 'title_3',
-                    'type' => 'solution',
-                	'thumbnail' => '/thumbnail_3.png',
-                	'terms' => array('vita' => array(new FakeTerm('vote', 'A vote')))
-                ),
-                4 => array(
-                    'slug' => 'slug_4',
-                    'title' => 'title_4',
-                	'thumbnail' => '/thumbnail_4.png',
-                	'type' => 'solution',
-                    'parent' => 'vote',
-                    'terms' => array('szakkolegium' => array(new FakeTerm('vote', 'A vote')))
-                ),
-                5 => array(
-                    'slug' => 'slug_5',
-                    'title' => 'title_5',
-                	'thumbnail' => '/thumbnail_5.png',
-                	'type' => 'solution',
-                    'parent' => 'vote',
-                    'terms' => array('szakkolegium' => array(new FakeTerm('vote', 'A vote')))
-                )),
-            "currentpost" => 1,
-            )
-        );
+		$this->setData((new TestData())->testData);
 	}
 
 	public function test_init() {
@@ -74,5 +34,37 @@ class ElektoriparlamentVoteTest extends WPTestCase {
     	$this->assertEquals($expected, $this->WP->output);
     }
 
+    public function test_get_children_by_taxonomy_with_empty() {
+    	$expected = "";
+    	$post=$this->WP->get_post(2);
+    	$this->WP->_set_query_result([]);
+    	$this->instance->list_assets_by_taxonomy( $post, 'szakkolegium', "Header\n", 'szakkoli', "href=%s, title=%s, image=%s\n" );
+    	$this->assertEquals($expected, $this->WP->output);
+    }
+    
+    public function test_update_custom_terms_updates_if_needed() {
+    	$this->instance->update_custom_terms(1);
+    	$found = false;
+    	foreach ($this->WP->get_terms("vita", array()) as $term) {
+			if($term->slug == 'vote' && $term->description == '1' && $term->name == 'title_1')
+				$found = true;
+    	}
+    	$this->assertTrue($found);
+    }
+
+    public function test_update_custom_terms_inserts_if_needed() {
+    	$this->instance->update_custom_terms(6);
+    	$found = false;
+    	foreach ($this->WP->get_terms("szakkoli", array()) as $term) {
+    		if($term->slug == 'slug_6' && $term->description == '6' && $term->name == 'title_1')
+    			$found = true;
+    	}
+    	$this->assertTrue($found);
+    }
+    
+    public function test_unknown_post_type_does_not_change_taxonomy() {
+    	$this->instance->update_custom_terms(7);
+    	$this->assertFalse($this->WP->updated_tax);
+    }
 }
 
