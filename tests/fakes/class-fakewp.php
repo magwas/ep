@@ -1,67 +1,33 @@
 <?php
 
-class FakeTerm {
-	function __construct($args) {
-		$this->slug = $args['slug'];
-		$this->description = $args['description'];
-		$this->name = $args['name'];
-		$this->term_id = rand();
-	}
-    function update($args) {
-    	foreach ($args as $key => $value) {
-    		$this->$key = $value;
-    	}
-    }
-}
-class FakePost {
-    function __construct($data) {
-    	$this->data = $data;
-    	$this->ID = $data['ID'];
-    	$this->post_name = $data['slug'];
-    	$this->post_title = $data['title'];
-    	$this->type = $data['type'];
-    }
-    function get_terms($tax, $args) {
-    	return $this->data['terms'][$tax];
-    }
-}
-
-class FakeQuery {
-	public $post_count;
-	function __construct($args,$wp) {
-		$this->wp = $wp;
-		$obj = new ArrayObject( $wp->post_list );
-		$this->it = $obj->getIterator();
-		$this->update_post_count ();
-	}
-	private function update_post_count() {
-		$post_count = $this->it->count();
-	}
-
-	function have_posts() {
-		return $this->it->valid();
-	}
-	function the_post() {
-		$p = $this->it->current();
-		$post = $this->wp->posts[$p];
-		$this->wp->post = $post;
-		$this->it->next();
-		$this->update_post_count ();
-	}
-}
+require_once 'class-fakeurigenerator.php';
+require_once 'class-faketerm.php';
+require_once 'class-fakepost.php';
+require_once 'class-fakequery.php';
+require_once 'class-fakeuser.php';
 
 class FakeWP {
 
+	static $instance;
     function __construct($testdata) {
-        $this->buildPosts ( $testdata );
+    	self::$instance = $this;
+        $this->buildTaxonomies ( $testdata );
+    	$this->buildPosts ( $testdata );
+        $this->buildUsers ( $testdata );
     	$currentpost = $testdata['currentpost'];
         $this->post = $this->posts[$currentpost];
         $this->output='';
-        $this->buildTaxonomies ( $testdata );
     	$this->updated_tax=false;
     	$this->is_feed=false;
+    	$this->current_user = $this->users[0];
     }
-	private function buildPosts($testdata) {
+	private function buildUsers($testdata) {
+		foreach($testdata['users'] as $key => $user) {
+			$user['ID'] = $key;
+			$this->users[$key] = new FakeUser($user);
+		}
+	}
+    private function buildPosts($testdata) {
 		foreach($testdata['posts'] as $key => $post) {
 			$post['ID'] = $key;
 			$this->posts[$key] = new FakePost($post);
@@ -69,26 +35,24 @@ class FakeWP {
 	}
     private function buildTaxonomies($testdata) {
 		$this->taxonomy = [];
-        foreach($testdata['taxonomy'] as $key=>$value) {
-        	$this->buildOneTaxonomy ($key, $value);
-        }
-	}
-	private function buildOneTaxonomy($key, $value) {
-		$this->taxonomy[$key] = [];
-		foreach ($value as $term) {
-			$this->taxonomy[$key][$term->term_id] = $term;
+		foreach($testdata['terms'] as $key=>$term) {
+			$theTerm = new FakeTerm($term);
+			$this->taxonomy[$term[1]][$term[0]] = $theTerm;
+        $this->allterms[$theTerm->term_id] = $theTerm;
 		}
 	}
+	private function buildOneTaxonomy($term) {
+		
+	}
 
-
-    function _set_query_result($post_list) {
-    	$this->post_list = $post_list;
-    }
     function add_action($name,$value) {
         $this->actions[$name] = $value;
     }
     function add_shortcode($name,$value) {
     	$this->shortcodes[$name] = $value;
+    }
+    function add_filter($name,$value) {
+    	$this->filters[$name] = $value;
     }
     function wp_enqueue_script($name,$path,$args,$version) {
     	$this->scripts[$name] = [$path,$args,$version];
@@ -129,8 +93,12 @@ class FakeWP {
     	return $this->get_site_url() . '/' . $this->post->post_name;
     }
 
-    function get_the_title() {
-    	return $this->post->post_title;
+    function get_the_title($post_id=0) {
+    	if($post_id == 0) {
+    		return $this->post->post_title;
+    	} else {
+    		return $this->posts[$post_id]->post_title;
+    	}
     }
 
     function get_the_id() {
@@ -151,6 +119,8 @@ class FakeWP {
     }
     function wp_insert_term($term_title, $tax_type, $args) {
     	$args['name'] = $term_title;
+    	$args[0] = rand();
+    	$args[1] = $tax_type;
     	$this->taxonomy[$tax_type][] = new FakeTerm($args);
     	$this->updated_tax=true;
     }
@@ -169,6 +139,19 @@ class FakeWP {
     }
     function wp_die() {
     	$this->died=true;
+    }
+    function wp_get_current_user() {
+    	return $this->current_user;
+    }
+    function get_user_meta($user_id, $meta) {
+    	return $this->users[$user_id]->get_user_meta($meta);
+    }
+    function update_user_meta($user_id, $meta, $value) {
+    	$this->users[$user_id]->update_meta($meta, $value);
+    }
+    function wp_set_current_user($user_id) {
+    	$this->current_user = $this->users[$user_id];
+    	 
     }
 }
  

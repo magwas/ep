@@ -15,46 +15,55 @@ class Views {
 </div>
 EOT;
 	
-    function _construct($structures,$dashboard) {
+    function __construct($structures,$dashboard,$uriGenerator) {
         $this->structures = $structures;
         $this->dashboard = $dashboard;
+        global $EP_WORLDPRESS_INTERFACE;
+        $this->WP = & $EP_WORLDPRESS_INTERFACE;
+        $this->uriGenerator = $uriGenerator;
     }
 
     function init() {
-        add_action('before_post_content', array($this, 'before_content'));
-        add_action('after_post_content', array($this, 'after_content'));
-        add_action('wp_footer', array($this, 'ep_footer'));
+        $this->WP->add_action('the_content', array($this, 'filter_content'));
+        $this->WP->add_action('wp_footer', array($this, 'ep_footer'));
+    }
+    
+    function filter_content( $content ) {
+    	$post = $this->WP->get_post();
+    	return $this->before_content($post) .
+    		$content .
+    		$this->after_content($post);
     }
 	function before_content( $post ) {
-		$this->structures->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/szakkolegium/%s">%s</a> alatt van.' );
-		$this->structures->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megoldási javaslata.' );
-		$this->dasboard->show_dashboard();
+		$ret  = $this->structures->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/szakkolegium/%s">%s</a> alatt van.' );
+		$ret .= $this->structures->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megoldási javaslata.' );
+		$ret .= $this->dashboard->show_dashboard();
+		return $ret;
 	}
 	
 	
 	function after_content( $post ) {
-		global $szakkol_format;
-		echo '<div class="et_pb_section et_section_regular">';
-		echo '<div class="et_pb_row">';
-		echo '<div class="et_pb_column_4_4">';
-		echo '<div class="et_pb_portfolio_grid clearfix et_pb_module et_pb_bg_layout_light ">';
-		$this->structures->list_assets_by_taxonomy( $post, 'szakkolegium', '<h2>Ide tartozó szakkolégiumok:</h2>', 'szakkoli', $this->szakkol_format );
-		echo '</div>';
-		echo '</div>';
-		echo '</div>';
-		echo '</div>';
-		$this->structures->list_assets_by_taxonomy( $post, 'post', '<h2>Programok:</h2>', 'szakkoli', '<a href="%s">%s</a><br>' );
-		$this->structures->list_assets_by_taxonomy( $post, 'problem', '<h2>Problémafelvetések:</h2>', 'szakkoli', '<a href="%s">%s</a><br>' );
-		$this->structures->list_assets_by_taxonomy( $post, 'javaslat', '<h2>Megoldási javaslatok:</h2>', 'vita', '<a href="%s">%s</a><br>' );
+		$ret = <<<'EOF'
+<div class="et_pb_section et_section_regular">
+<div class="et_pb_row">
+<div class="et_pb_column_4_4">
+<div class="et_pb_portfolio_grid clearfix et_pb_module et_pb_bg_layout_light ">
+EOF;
+		$ret .= $this->structures->list_assets_by_taxonomy( $post, 'szakkolegium', '<h2>Ide tartozó szakkolégiumok:</h2>', 'szakkoli', $this->szakkol_format );
+		$ret .= '</div></div></div></div>';
+		$ret .= $this->structures->list_assets_by_taxonomy( $post, 'post', '<h2>Programok:</h2>', 'szakkoli', '<a href="%s">%s</a><br>' );
+		$ret .= $this->structures->list_assets_by_taxonomy( $post, 'problem', '<h2>Problémafelvetések:</h2>', 'szakkoli', '<a href="%s">%s</a><br>' );
+		$ret .= $this->structures->list_assets_by_taxonomy( $post, 'javaslat', '<h2>Megoldási javaslatok:</h2>', 'vita', '<a href="%s">%s</a><br>' );
+		return $ret;
 	}
 	
 	function ep_footer() {
-		$me = new eDemo_SSOauth_Base();
-		echo "<script type='text/javascript'>\n";
-		echo 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n";
-		echo 'jQuery("#login_button").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n";
-		echo 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n";
-		echo 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action( 'register' ) . '"};';
-		echo "</script>\n";
+		$me = $this->uriGenerator;;
+		$this->WP->echo("<script type='text/javascript'>\n");
+		$this->WP->echo( 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n");
+		$this->WP->echo( 'jQuery("#login_button").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n");
+		$this->WP->echo( 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n");
+		$this->WP->echo( 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action( 'register' ) . '"};');
+		$this->WP->echo( "</script>\n");
 	}
 }

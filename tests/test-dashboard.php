@@ -15,66 +15,71 @@ class DashboardTest extends WPTestCase {
         $this->setData((new TestData())->testData);
 	}
 
-	public function ShowUnauthenticated() {
-		$this->expectOutputString(
-			Dashboard::DASHBOARD_HEADER .
-			Dashboard::LOGIN .
-			Dashboard::DASHBOARD_FOOTER
-		);
+	public function testShowUnauthenticated() {
 		$this->dashboard->show_dashboard();
+		$this->assertEquals(
+			Dashboard::DASHBOARD_HEADER .
+				Dashboard::LOGIN .
+				Dashboard::DASHBOARD_FOOTER,
+			$this->WP->output
+		);
 	}
 
-	public function ShowAuthenticatedNoAccept() {
-		$this->expectOutputString(
-			Dashboard::DASHBOARD_HEADER .
-			sprintf( Dashboard::ACCEPT_THE_RULES, wp_get_current_user()->display_name ) .
-			Dashboard::DASHBOARD_FOOTER
-		);
+	public function testShowAuthenticatedNoAccept() {
+		$this->WP->wp_set_current_user( 1 );
 		$this->dashboard->show_dashboard();
-	}
-	public function ShowAcceptNoAssurance() {
-		$this->user->update_meta('accepted_the_rules', 1 );
-		$this->expectOutputString(
+		$this->assertEquals(
 			Dashboard::DASHBOARD_HEADER .
-			sprintf( Dashboard::GET_ASSURANCE, wp_get_current_user()->display_name ) .
-			Dashboard::DASHBOARD_FOOTER
+				sprintf( Dashboard::ACCEPT_THE_RULES, 'Unaccepting User' ) .
+				Dashboard::DASHBOARD_FOOTER,
+			$this->WP->output
 		);
-		$this->dashboard->show_dashboard();
 	}
-	public function ShowAcceptAndEmagyarAssurance() {
-		$this->user->update_meta('accepted_the_rules', 1 );
-		$this->user->update_meta( $user, 'eDemoSSO_assurances', '["emagyar"]' );
-		wp_set_current_user( $user );
-		$this->expectOutputString(
+	public function testShowAcceptNoAssurance() {
+		$this->WP->wp_set_current_user( 2 );
+		$this->dashboard->show_dashboard();
+		$this->assertEquals(
 			Dashboard::DASHBOARD_HEADER .
-			sprintf( Dashboard::YOU_ARE_MEMBER, wp_get_current_user()->display_name ) .
-			Dashboard::DASHBOARD_FOOTER
+				sprintf( Dashboard::GET_ASSURANCE, 'Accepting Uncertified User' ) .
+				Dashboard::DASHBOARD_FOOTER,
+			$this->WP->output
 		);
-		$this->dashboard->show_dashboard();
 	}
-	public function ShowAcceptAndAssurance() {
-		$this->user->update_meta( $user, 'accepted_the_rules', 1 );
-		$this->user->update_meta( $user, 'eDemoSSO_assurances', '["magyar"]' );
-		$this->expectOutputString(
+	public function testShowAcceptAndEmagyarAssurance() {
+		$this->WP->wp_set_current_user( 3 );
+		$this->dashboard->show_dashboard();
+		$this->assertEquals(
 			Dashboard::DASHBOARD_HEADER .
-			sprintf( Dashboard::YOU_ARE_MEMBER, wp_get_current_user()->display_name ) .
-			Dashboard::DASHBOARD_FOOTER
+			sprintf( Dashboard::YOU_ARE_MEMBER, 'Accepting Emagyar User' ) .
+			Dashboard::DASHBOARD_FOOTER,
+			$this->WP->output
 		);
+	}
+	public function testShowAcceptAndAssurance() {
+		$this->WP->wp_set_current_user( 4 );
 		$this->dashboard->show_dashboard();
+		$this->assertEquals(
+			Dashboard::DASHBOARD_HEADER .
+			sprintf( Dashboard::YOU_ARE_MEMBER, 'Accepting Magyar User' ) .
+			Dashboard::DASHBOARD_FOOTER,
+			$this->WP->output
+		);
 	}
-	public function AcceptRules() {
-		$this->user->update_meta( $user );
-		$this->assertEquals( array(), get_user_meta( $user, 'accepted_the_rules' ) );
-		$this->expectOutputString( 'user=' . $user . 'accepted=1' );
-		$this->setExpectedException( 'WPDieException' );
-		$this->dashboard->accept_rules();
-		$this->assertEquals( 1, get_user_meta( $user, 'accepted_the_rules' ) );
+	public function testShowAcceptAndBothAssurances() {
+		$this->WP->wp_set_current_user( 5 );
+		$this->dashboard->show_dashboard();
+		$this->assertEquals(
+				Dashboard::DASHBOARD_HEADER .
+				sprintf( Dashboard::YOU_ARE_MEMBER, 'Accepting Magyar and Emagyar User' ) .
+				Dashboard::DASHBOARD_FOOTER,
+				$this->WP->output
+				);
 	}
-
-	public function AcceptRulesAjaxIsRegistered() {
-		global $wp_filter;
-		$this->assertTrue( isset( $wp_filter['wp_ajax_ep_accept_rules'] ) );
+	public function test_dashboard_have_init() {
+		$this->dashboard->init();
+		$this->assertTrue(true);
 	}
+	
 
 }
 

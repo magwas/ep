@@ -2,9 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
-include_once 'class-fakewp.php';
+include_once 'fakes/class-fakewp.php';
 
-class WPTestCase extends TestCase {
+abstract class WPTestCase extends TestCase {
 
     function setData($testdata) {
         global $EP_WORLDPRESS_INTERFACE;
@@ -14,6 +14,9 @@ class WPTestCase extends TestCase {
 
     function assertActionAdded($name,$value) {
         $this->assertEquals($this->WP->actions[$name], $value);
+    }
+    function assertFilterAdded($name,$value) {
+        $this->assertEquals($this->WP->filters[$name], $value);
     }
     function assertShortcodeAdded($name,$value) {
         $this->assertEquals($this->WP->shortcodes[$name], $value);

@@ -7,9 +7,11 @@ class Structures {
     }
 	public function get_parent_by_taxonomy( $post, $taxname, $fmt ) {
 		$term_list = $this->WP->wp_get_post_terms( $post->ID, $taxname, array( 'fields' => 'all' ) );
+		$ret = '';
 		foreach ( $term_list as $term_single ) {
-			$this->WP->echo(sprintf( $fmt, $this->WP->get_site_url(), $term_single->slug, $term_single->name ));
+			$ret .= sprintf( $fmt, $this->WP->get_site_url(), $term_single->slug, $term_single->name );
 		}
+		return $ret;
 	}
 
 	public function get_child_by_taxonomy( $post, $post_type, $tax_name ) {
@@ -32,26 +34,27 @@ class Structures {
 		if ( ! $loop->have_posts() ) {
 			return;
 		}
-		$this->WP->echo($header_string);
+		$ret = $header_string;
 		while ( $loop->have_posts() ) :
-			$this->listOnePost ( $loop, $fmt );
+			$ret .= $this->listOnePost ( $loop, $fmt );
 		endwhile;
 		$this->WP->wp_reset_postdata();
+		return $ret;
 	}
 
 	private function listOnePost($loop, $fmt) {
 		$loop->the_post();
-		$this->WP->echo(sprintf( $fmt,
+		return sprintf( $fmt,
 				$this->WP->get_permalink(),
 				$this->WP->get_the_title(),
 				$this->WP->get_the_post_thumbnail()
-				));
+				);
 	}
 
 
 	public function list_assets_by_taxonomy( $post, $post_type, $header_string, $tax_name, $fmt ) {
 		$loop = $this->get_child_by_taxonomy( $post, $post_type, $tax_name );
-		$this->list_posts_for( $loop, $header_string, $fmt );
+		return $this->list_posts_for( $loop, $header_string, $fmt );
 	}
 
 	function update_custom_terms( $post_id ) {

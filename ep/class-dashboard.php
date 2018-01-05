@@ -36,6 +36,11 @@ EOT;
 Tag vagy, %s!
 EOT;
 
+	function __construct(  ) {
+		global $EP_WORLDPRESS_INTERFACE;
+		$this->WP = & $EP_WORLDPRESS_INTERFACE;
+	}
+	
     function init() {
     }
 	function unauthenticated( $user ) {
@@ -43,37 +48,40 @@ EOT;
 	}
 
 	function has_assurance( $user ) {
-		$assurances = get_user_meta( $user->ID, 'eDemoSSO_assurances' );
-		return is_array( $assurances ) && ( in_array( '["magyar"]', $assurances ) || in_array( '["emagyar"]', $assurances ) );
+		$assurances = $this->WP->get_user_meta( $user->ID, 'eDemoSSO_assurances' );
+		if (!is_array( $assurances ) || !isset($assurances[0]))
+			return;
+		$splitAssurances = json_decode($assurances[0]);
+		return ( in_array( "magyar", $splitAssurances ) || in_array( "emagyar", $splitAssurances ) );
 	}
 
 	function did_accept( $user ) {
-		$accepted = get_user_meta( $user->ID, 'accepted_the_rules', true );
+		$accepted = $this->WP->get_user_meta( $user->ID, 'accepted_the_rules', true );
 		return $accepted;
 	}
 
 	function show_dashboard() {
-		echo self::DASHBOARD_HEADER;
+		$this->WP->echo(self::DASHBOARD_HEADER);
 		$this->show_dashboard_content();
-		echo self::DASHBOARD_FOOTER;
+		$this->WP->echo(self::DASHBOARD_FOOTER);
 	}
 
 	function show_dashboard_content() {
-		$user = wp_get_current_user();
+		$user = $this->WP->wp_get_current_user();
 		if ( $this->unauthenticated( $user ) ) {
-			echo self::LOGIN;
+			$this->WP->echo(self::LOGIN);
 			return;
 		}
 		$name = $user->display_name;
 		if ( ! $this->did_accept( $user ) ) {
-			echo sprintf( self::ACCEPT_THE_RULES, $name );
+			$this->WP->echo(sprintf( self::ACCEPT_THE_RULES, $name ));
 			return;
 		}
 		if ( ! $this->has_assurance( $user ) ) {
-			echo sprintf( self::GET_ASSURANCE, $name );
+			$this->WP->echo(sprintf( self::GET_ASSURANCE, $name ));
 			return;
 		}
-		echo sprintf( self::YOU_ARE_MEMBER, $name );
+		$this->WP->echo(sprintf( self::YOU_ARE_MEMBER, $name ));
 	}
 
 }

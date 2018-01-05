@@ -20,25 +20,29 @@ class ElektoriparlamentStructuresTest extends WPTestCase {
 
     public function test_get_parent_by_taxonomy() {
         $post=$this->WP->get_post(3);
-        $this->instance->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megold<C3><A1>si javaslata.' );
-        $this->assertEquals('A <a href="http://example.com/problem/vote">A vote</a> megold<C3><A1>si javaslata.', $this->WP->output);
+        $result = $this->instance->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megold<C3><A1>si javaslata.' );
+        $this->assertEquals('A <a href="http://example.com/problem/vote">A vote</a> megold<C3><A1>si javaslata.', $result);
+    }
+
+    public function test_get_parent_by_taxonomy_szakkol_case() {
+    	$post=$this->WP->get_post(1);
+    	$result = $this->instance->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/problem/%s">%s</a> szakkolihoz tartozik.' );
+    	$this->assertEquals('A <a href="http://example.com/problem/slug_6">An unknown post</a> szakkolihoz tartozik.', $result);
     }
     
     public function test_get_children_by_taxonomy() {
     	$expected = "Header\nhref=http://example.com/slug_2, title=title_2, image=/thumbnail_2.png\n" .
-			"href=http://example.com/slug_4, title=title_4, image=/thumbnail_4.png\n" .
+      		"href=http://example.com/slug_4, title=title_4, image=/thumbnail_4.png\n" .
 			"href=http://example.com/slug_5, title=title_5, image=/thumbnail_5.png\n";
         $post=$this->WP->get_post(1);
-        $this->WP->_set_query_result(array(2,4,5));
-    	$this->instance->list_assets_by_taxonomy( $post, 'szakkolegium', "Header\n", 'szakkoli', "href=%s, title=%s, image=%s\n" );
-    	$this->assertEquals($expected, $this->WP->output);
+    	$result = $this->instance->list_assets_by_taxonomy( $post, 'javaslat', "Header\n", 'vita', "href=%s, title=%s, image=%s\n" );
+    	$this->assertEquals($expected, $result);
     }
 
     public function test_get_children_by_taxonomy_with_empty() {
     	$expected = "";
     	$post=$this->WP->get_post(2);
-    	$this->WP->_set_query_result([]);
-    	$this->instance->list_assets_by_taxonomy( $post, 'szakkolegium', "Header\n", 'szakkoli', "href=%s, title=%s, image=%s\n" );
+    	$this->instance->list_assets_by_taxonomy( $post, 'prob', "Header\n", 'vita', "href=%s, title=%s, image=%s\n" );
     	$this->assertEquals($expected, $this->WP->output);
     }
     
@@ -53,10 +57,11 @@ class ElektoriparlamentStructuresTest extends WPTestCase {
     }
 
     public function test_update_custom_terms_inserts_if_needed() {
-    	$this->instance->update_custom_terms(6);
+    	$this->instance->update_custom_terms(8);
     	$found = false;
-    	foreach ($this->WP->get_terms("szakkoli", array()) as $term) {
-    		if($term->slug == 'slug_6' && $term->description == '6' && $term->name == 'title_1')
+    	$terms = $this->WP->get_terms("szakkoli", array());
+		foreach ($terms as $term) {
+    		if($term->slug == 'slug_8' && $term->description == '8' && $term->name == 'title_8')
     			$found = true;
     	}
     	$this->assertTrue($found);

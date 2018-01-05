@@ -34,7 +34,6 @@ class ElektoriparlamentVoteTest extends WPTestCase {
 	
     public function test_shortCode() {
     	$post=$this->WP->get_post(1);
-    	$this->WP->_set_query_result(array(2,4,5));
         $result = $this->instance->vote_shortcode();
         $rows = '';
         foreach ([2,4,5] as $postid) {
