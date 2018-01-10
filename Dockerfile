@@ -1,9 +1,6 @@
 FROM ubuntu:xenial
-
 RUN apt-get update
-
 RUN apt-get -y upgrade
-
 RUN echo 'mysql-server mysql-server/root_password password password' |debconf-set-selections
 RUN echo 'mysql-server mysql-server/root_password_again password password' |debconf-set-selections
 RUN apt -y install apache2 php php-mysql mysql-server wget less vim git php-dom subversion php-xdebug make composer unzip
