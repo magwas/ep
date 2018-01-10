@@ -1,9 +1,6 @@
 FROM ubuntu:xenial
-
 RUN apt-get update
-
 RUN apt-get -y upgrade
-
 RUN echo 'mysql-server mysql-server/root_password password password' |debconf-set-selections
 RUN echo 'mysql-server mysql-server/root_password_again password password' |debconf-set-selections
 RUN apt -y install apache2 php php-mysql mysql-server wget less vim git php-dom subversion php-xdebug make composer unzip
@@ -24,4 +21,6 @@ RUN apt -y install subversion
 RUN git clone -b master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git /usr/local/share/wpcs
 RUN phpcs --config-set installed_paths /usr/local/share/wpcs
 RUN service mysql start;wp --allow-root --path=/var/www/wordpress scaffold plugin-tests ep;cd /ep;bin/install-wp-tests.sh test_database root password
+RUN git clone https://github.com/edemo/wp_PDOauth_plugin.git /usr/local/wp_PDOauth_plugin
+RUN ln -s /usr/local/wp_PDOauth_plugin/eDemo-SSOauth /tmp/wordpress/wp-content/plugins/eDemo-SSOauth
 
