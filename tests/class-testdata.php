@@ -8,59 +8,59 @@ class TestData {
 				],
 				'posts' => [
 						1 => [
-								'slug' => 'vote',
-								'title' => 'title_1',
+								'post_name' => 'vote',
+								'post_title' => 'title_1',
 								'thumbnail' => '/thumbnail_1.png',
-								'type' => 'problem',
+								'post_type' => 'problem',
 								'terms' => [2]
 						],
 						2 => [
-								'slug' => 'slug_2',
-								'title' => 'title_2',
-								'type' => 'javaslat',
+								'post_name' => 'slug_2',
+								'post_title' => 'title_2',
+								'post_type' => 'javaslat',
 								'thumbnail' => '/thumbnail_2.png',
 								'terms' => [1]
 						],
 						3 => [
-								'slug' => 'slug_3',
-								'title' => 'title_3',
-								'type' => 'solution',
+								'post_name' => 'slug_3',
+								'post_title' => 'title_3',
+								'post_type' => 'solution',
 								'thumbnail' => '/thumbnail_3.png',
 								'terms' => [1]
 						],
 						4 => [
-								'slug' => 'slug_4',
-								'title' => 'title_4',
+								'post_name' => 'slug_4',
+								'post_title' => 'title_4',
 								'thumbnail' => '/thumbnail_4.png',
-								'type' => 'javaslat',
+								'post_type' => 'javaslat',
 								'parent' => 'vote',
 								'terms' => [1]
 						],
 						5 => [
-								'slug' => 'slug_5',
-								'title' => 'title_5',
+								'post_name' => 'slug_5',
+								'post_title' => 'title_5',
 								'thumbnail' => '/thumbnail_5.png',
-								'type' => 'javaslat',
+								'post_type' => 'javaslat',
 								'parent' => 'vote',
 								'terms' => [1]
 						],
 						6 => [
-								'slug' => 'slug_6',
-								'title' => 'title_6',
+								'post_name' => 'slug_6',
+								'post_title' => 'title_6',
 								'thumbnail' => '/thumbnail_6.png',
-								'type' => 'szakkolegium'
+								'post_type' => 'szakkolegium'
 						],
 						7 => [
-								'slug' => 'slug_7',
-								'title' => 'title_7',
+								'post_name' => 'slug_7',
+								'post_title' => 'title_7',
 								'thumbnail' => '/thumbnail_7.png',
-								'type' => 'unknown'
+								'post_type' => 'unknown'
 						],
 						8 => [
-								'slug' => 'slug_8',
-								'title' => 'title_8',
+								'post_name' => 'slug_8',
+								'post_title' => 'title_8',
 								'thumbnail' => '/thumbnail_8.png',
-								'type' => 'szakkolegium'
+								'post_type' => 'szakkolegium'
 						],
 				],
 				"currentpost" => 1,

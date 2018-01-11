@@ -2,10 +2,19 @@
 class FakePost {
 	function __construct($data) {
 		$this->data = $data;
-		$this->ID = $data['ID'];
-		$this->post_name = $data['slug'];
-		$this->post_title = $data['title'];
-		$this->type = $data['type'];
+		if(!isset($data['ID'])) {
+		    $this->ID = rand();
+		} else {
+    		$this->ID = $data['ID'];
+		}
+		$this->post_name = $data['post_name'];
+		$this->post_title = $data['post_title'];
+		$this->post_type = $data['post_type'];
+		if(isset($data['post_author'])) {
+		    $this->post_author =  $data['post_author'];
+		} else {
+		    $this->post_author = (FakeWp::$instance)->wp_get_current_user()->ID;
+		}
 		if(!isset($data['terms'])) {
 			$this->terms = [];
 			return;
@@ -15,9 +24,25 @@ class FakePost {
 			$this->terms[$theTerm->taxonomy][] = $theTerm;
 		}
 	}
-	function get_terms($tax, $args) {
+	function get_terms($tax) {
 		if(!isset($this->terms[$tax]))
 			return [];
 			return $this->terms[$tax];
+	}
+	function set_terms($tax, $terms) {
+	    $ids = [];
+	    foreach($terms as $term) {
+	        $id = rand();
+	        $ids[] = $id;
+	        $args=array(
+	            $id,
+	            $tax,
+	            'name'=>$term,
+	            'slug' => $term,
+	            'description' =>$term
+	        );
+	        $this->terms[$tax][]= new FakeTerm($args);
+	    }
+	    return $ids;
 	}
 }

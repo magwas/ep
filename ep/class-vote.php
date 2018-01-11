@@ -21,15 +21,17 @@ EOT;
 	}
 	function vote_shortcode() {
 		if ( ! $this->WP->is_feed() ) {
-			$kids  = $this->structures->get_child_by_taxonomy( $this->WP->get_post(), 'javaslat', 'vita' );
+			$post = $this->WP->get_post();
+            $kids  = $this->structures->get_child_by_taxonomy( $post, 'javaslat', 'vita' );
 			$count = $kids->post_count;
 			$rows  = '';
 			while ( $kids->have_posts() ) {
 				$kids->the_post();
-				$rows .= sprintf( self::ALTERNATIVE_ROW, $this->WP->get_the_title(), $this->WP->get_post()->post_name );
+				$kid = $this->WP->get_post();
+				$rows .= sprintf( self::ALTERNATIVE_ROW, $kid->post_title, $kid->post_name );
 			}
 			$this->WP->wp_reset_postdata();
-			$form = sprintf( self::FORM_HTML, $this->WP->get_the_id( $this->WP->get_post() ), $rows );
+			$form = sprintf( self::FORM_HTML, $post->ID, $rows );
 				return $form;
 		} else {
 				return $this->WP->__( 'Figyelem: A problémafelvetésben szavazás van. Látogasson el az oldalra!', 'ep' );
@@ -43,7 +45,7 @@ EOT;
 
 	function vote_submit() {
 		$this->WP->echo('hello!');
-		$this->WP->echo($this->WP->get_POST_data()['data']);
+		$this->WP->echo($this->WP->get_POST_data());
 		$this->WP->wp_die();
 	}
 

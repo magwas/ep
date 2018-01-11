@@ -22,7 +22,7 @@ class Structures {
 					array(
 						'taxonomy' => $tax_name,
 						'field'    => 'slug',
-						'terms'    => $post->post_name,
+						'terms'    => [$post->post_name],
 					),
 				),
 			);
@@ -44,10 +44,11 @@ class Structures {
 
 	private function listOnePost($loop, $fmt) {
 		$loop->the_post();
+		$post=$this->WP->get_post();
 		return sprintf( $fmt,
-				$this->WP->get_permalink(),
-				$this->WP->get_the_title(),
-				$this->WP->get_the_post_thumbnail()
+				$this->WP->get_post_permalink($post),
+				$post->post_title,
+				$this->WP->get_the_post_thumbnail($post)
 				);
 	}
 
@@ -57,20 +58,20 @@ class Structures {
 		return $this->list_posts_for( $loop, $header_string, $fmt );
 	}
 
-	function update_custom_terms( $post_id ) {
-
-		$post_type = $this->WP->get_post_type( $post_id );
+	public function update_custom_terms( $post_id ) {
+        $post = $this->WP->get_post($post_id);
+		$post_type = $this->WP->get_post_type( $post );
 		$tax_type  = $this->figureOutTaxonomyType ( $post_type );
 		if ('' == $tax_type) {
 			return;
 		}
 
-		$term_title = $this->WP->get_the_title( $post_id );
-		$term_slug  = $this->WP->get_post( $post_id )->post_name;
+		$term_title = $post->post_title;
+		$term_slug  = $post->post_name;
 		$existing_terms = $this->WP->get_terms( $tax_type, ['hide_empty' => false]);
 
 		foreach ( $existing_terms as $term ) {
-			if($this->mayUpdateTerm ( $post_id, $term, $tax_type, $term_title, $term_slug )) {
+			if($this->mayUpdateTerm ( $post, $term, $tax_type, $term_title, $term_slug )) {
 				return;
 			}
 		}
@@ -82,8 +83,8 @@ class Structures {
 			]
 		);
 	}
-	private function mayUpdateTerm($post_id, $term, $tax_type, $term_title, $term_slug) {
-		if ( $term->description == $post_id ) {
+	private function mayUpdateTerm($post, $term, $tax_type, $term_title, $term_slug) {
+		if ( $term->description == $post->ID ) {
 			$this->WP->wp_update_term(
 				$term->term_id, $tax_type, array(
 					'name' => $term_title,

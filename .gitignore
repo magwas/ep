@@ -1,2 +1,3 @@
-coverage/
+coverage-unit/
+coverage-integration/
 vendor/

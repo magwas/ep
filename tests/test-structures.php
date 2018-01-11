@@ -20,20 +20,22 @@ class ElektoriparlamentStructuresTest extends WPTestCase {
 
     public function test_get_parent_by_taxonomy() {
         $post=$this->WP->get_post(3);
-        $result = $this->instance->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megold<C3><A1>si javaslata.' );
-        $this->assertEquals('A <a href="http://example.com/problem/vote">A vote</a> megold<C3><A1>si javaslata.', $result);
+        $result = $this->instance->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megoldasi javaslata.' );
+        $this->assertEquals('A <a href="http://example.org/problem/vote">A vote</a> megoldasi javaslata.', $result);
     }
 
     public function test_get_parent_by_taxonomy_szakkol_case() {
     	$post=$this->WP->get_post(1);
     	$result = $this->instance->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/problem/%s">%s</a> szakkolihoz tartozik.' );
-    	$this->assertEquals('A <a href="http://example.com/problem/slug_6">An unknown post</a> szakkolihoz tartozik.', $result);
+    	$this->assertEquals('A <a href="http://example.org/problem/slug_6">An unknown post</a> szakkolihoz tartozik.', $result);
     }
     
     public function test_get_children_by_taxonomy() {
-    	$expected = "Header\nhref=http://example.com/slug_2, title=title_2, image=/thumbnail_2.png\n" .
-      		"href=http://example.com/slug_4, title=title_4, image=/thumbnail_4.png\n" .
-			"href=http://example.com/slug_5, title=title_5, image=/thumbnail_5.png\n";
+    	$expected = 'Header
+href=http://example.org/?post_type=javaslat&p=2, title=title_2, image=<img src="http://example.org/wp-content/uploads//thumbnail_2.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
+href=http://example.org/?post_type=javaslat&p=4, title=title_4, image=<img src="http://example.org/wp-content/uploads//thumbnail_4.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
+href=http://example.org/?post_type=javaslat&p=5, title=title_5, image=<img src="http://example.org/wp-content/uploads//thumbnail_5.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
+';
         $post=$this->WP->get_post(1);
     	$result = $this->instance->list_assets_by_taxonomy( $post, 'javaslat', "Header\n", 'vita', "href=%s, title=%s, image=%s\n" );
     	$this->assertEquals($expected, $result);

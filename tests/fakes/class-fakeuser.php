@@ -1,7 +1,7 @@
 <?php
 class FakeUser {
 	function __construct($args=[]) {
-		$this->ID = 0;
+		$this->ID = rand();
 		foreach($args as $key => $value ) {
 			$this->$key = $value;
 		}

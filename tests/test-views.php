@@ -22,10 +22,10 @@ class ViewsTest extends WPTestCase {
 	public function testFilterAddsTheHeaderAndFooter() {
 		$this->WP->current_post = $this->WP->posts[1];
 		$this->assertEquals(
-			'A <a href="http://example.com/szakkolegium/slug_6">An unknown post</a> alatt van.content<div class="et_pb_section et_section_regular">
+			'A <a href="http://example.org/szakkolegium/slug_6">An unknown post</a> alatt van.content<div class="et_pb_section et_section_regular">
 <div class="et_pb_row">
 <div class="et_pb_column_4_4">
-<div class="et_pb_portfolio_grid clearfix et_pb_module et_pb_bg_layout_light "></div></div></div></div><h2>Megoldási javaslatok:</h2><a href="http://example.com/slug_2">title_2</a><br><a href="http://example.com/slug_4">title_4</a><br><a href="http://example.com/slug_5">title_5</a><br>',
+<div class="et_pb_portfolio_grid clearfix et_pb_module et_pb_bg_layout_light "></div></div></div></div><h2>Megoldási javaslatok:</h2><a href="http://example.org/?post_type=javaslat&p=2">title_2</a><br><a href="http://example.org/?post_type=javaslat&p=4">title_4</a><br><a href="http://example.org/?post_type=javaslat&p=5">title_5</a><br>',
 			$this->instance->filter_content("content")
 		);
 	}

@@ -29,7 +29,7 @@ class ElektoriparlamentVoteTest extends WPTestCase {
 
 	public function test_enqueue_scripts() {
 		$this->instance->enqueue_scripts();
-		$this->assertScriptEnqueued( 'ep-vote', 'http://example.com/wp-content/plugins/ep/assets/js/voteslider.js', array(), EP_VERSION, false  );
+		$this->assertScriptEnqueued( 'ep-vote', 'http://example.org/wp-content/plugins/assets/js/voteslider.js', array(), EP_VERSION, false  );
 	}
 	
     public function test_shortCode() {
@@ -45,13 +45,15 @@ class ElektoriparlamentVoteTest extends WPTestCase {
     public function test_shortCode_in_feed() {
     	$this->WP->is_feed=true;
     	$result = $this->instance->vote_shortcode();
-    	$this->assertEquals('ep:Figyelem: A problémafelvetésben szavazás van. Látogasson el az oldalra!',$result);
+    	$this->assertEquals('Figyelem: A problémafelvetésben szavazás van. Látogasson el az oldalra!',$result);
    }
    
    public function test_vote_submit() {
-   		$this->instance->vote_submit();
-   		$this->assertDied();
-   		$this->assertEquals('hello!foo',$this->WP->output);
+        global $_POST;
+        $_POST = ['data' => 'foo'];
+        $this->instance->vote_submit();
+        $this->assertDied();
+        $this->assertEquals('hello!foo',$this->WP->output);
    }
     
 }

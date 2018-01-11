@@ -9,6 +9,7 @@
 	License: GPL2
 */
 
+include_once 'class-wpinterface.php';
 global $EP_WORLDPRESS_INTERFACE;
 if(!isset($EP_WORLDPRESS_INTERFACE))
 	$EP_WORLDPRESS_INTERFACE=new WPInterface();

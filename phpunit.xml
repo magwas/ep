@@ -4,10 +4,16 @@
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
+	stopOnFailure="true"
+	stopOnError="true"
+	stopOnIncomplete="true"
 	>
 	<testsuites>
-		<testsuite>
+		<testsuite name="unit">
 			<directory prefix="test-" suffix=".php">./tests/</directory>
+		</testsuite>
+		<testsuite name="integration">
+			<directory prefix="test-" suffix=".php">./integrationtests/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
