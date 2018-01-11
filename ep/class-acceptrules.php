@@ -12,11 +12,12 @@ class AcceptRules {
 	}
 
 	function accept_rules() {
-		$user = $this->WP->wp_get_current_user();
-		$this->WP->update_user_meta( $user->ID, 'accepted_the_rules', 1 );
-		$this->WP->echo('user=' . $user->ID);
-		$this->WP->echo('accepted=' . $this->WP->get_user_meta( $user->ID, 'accepted_the_rules', true )[0]);
-		$this->WP->wp_die();
+		global $EP_WORLDPRESS_INTERFACE;
+		$user = $EP_WORLDPRESS_INTERFACE->wp_get_current_user();
+		$EP_WORLDPRESS_INTERFACE->update_user_meta( $user->ID, 'accepted_the_rules', 1 );
+		$EP_WORLDPRESS_INTERFACE->echo('user=' . $user->ID);
+		$EP_WORLDPRESS_INTERFACE->echo('accepted=' . $EP_WORLDPRESS_INTERFACE->get_user_meta( $user->ID, 'accepted_the_rules', true )[0]);
+		$EP_WORLDPRESS_INTERFACE->wp_die();
 	}
 }
 

@@ -31,6 +31,9 @@ function epBootstrap() {
 	
     $pluginVersion = '0.1.0';
     if (defined('DOING_AJAX') && DOING_AJAX) {
+	    $structures = new Structures();
+	    $acceptrules = new AcceptRules($structures);
+	    $acceptrules->init();
         return;
     }
     if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
