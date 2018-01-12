@@ -1,7 +1,9 @@
 
-all: phptests itests
+all: stylecheck phptests itests
 
 
+stylecheck:
+	phpcs
 phptests: 
 	phpunit --whitelist 'ep' --coverage-html coverage-unit --testsuite unit
 

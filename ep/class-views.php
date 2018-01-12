@@ -1,4 +1,4 @@
-<?php // phpcs:disable Squiz.Commenting
+<?php declare(strict_types=1);
 
 class Views {
 	private $szakkol_format = <<<'EOT'
@@ -14,36 +14,36 @@ class Views {
 	</h2>
 </div>
 EOT;
-	
-    function __construct($structures,$dashboard,$uriGenerator) {
-        $this->structures = $structures;
-        $this->dashboard = $dashboard;
-        global $EP_WORLDPRESS_INTERFACE;
-        $this->WP = & $EP_WORLDPRESS_INTERFACE;
-        $this->uriGenerator = $uriGenerator;
-    }
 
-    function init() {
-        $this->WP->add_action('the_content', array($this, 'filter_content'));
-        $this->WP->add_action('wp_footer', array($this, 'ep_footer'));
-    }
-    
-    function filter_content( $content ) {
-    	$post = $this->WP->get_post();
-    	return $this->before_content($post) .
-    		$content .
-    		$this->after_content($post);
-    }
+	function __construct( $structures, $dashboard, $uri_generator ) {
+		$this->structures = $structures;
+		$this->dashboard  = $dashboard;
+		global $_ep_wordpress_interface;
+		$this->wp            = & $_ep_wordpress_interface;
+		$this->uri_generator = $uri_generator;
+	}
+
+	function init() {
+		$this->wp->add_action( 'the_content', array( $this, 'filter_content' ) );
+		$this->wp->add_action( 'wp_footer', array( $this, 'ep_footer' ) );
+	}
+
+	function filter_content( $content ) {
+		$post = $this->wp->get_post();
+		return $this->before_content( $post ) .
+			$content .
+			$this->after_content( $post );
+	}
 	function before_content( $post ) {
 		$ret  = $this->structures->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/szakkolegium/%s">%s</a> alatt van.' );
 		$ret .= $this->structures->get_parent_by_taxonomy( $post, 'vita', 'A <a href="%s/problem/%s">%s</a> megoldási javaslata.' );
 		$ret .= $this->dashboard->show_dashboard();
 		return $ret;
 	}
-	
-	
+
+
 	function after_content( $post ) {
-		$ret = <<<'EOF'
+		$ret  = <<<'EOF'
 <div class="et_pb_section et_section_regular">
 <div class="et_pb_row">
 <div class="et_pb_column_4_4">
@@ -56,14 +56,15 @@ EOF;
 		$ret .= $this->structures->list_assets_by_taxonomy( $post, 'javaslat', '<h2>Megoldási javaslatok:</h2>', 'vita', '<a href="%s">%s</a><br>' );
 		return $ret;
 	}
-	
+
 	function ep_footer() {
-		$me = $this->uriGenerator;;
-		$this->WP->echo("<script type='text/javascript'>\n");
-		$this->WP->echo( 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n");
-		$this->WP->echo( 'jQuery("#login_button").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n");
-		$this->WP->echo( 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n");
-		$this->WP->echo( 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action( 'register' ) . '"};');
-		$this->WP->echo( "</script>\n");
+		$me = $this->uri_generator;
+		;
+		$this->wp->echo( "<script type='text/javascript'>\n" );
+		$this->wp->echo( 'jQuery("' . ADA_LOGIN_ELEMENT_SELECTOR . '").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n" );
+		$this->wp->echo( 'jQuery("#login_button").click(function(){' . str_replace( 'javascript:', '', $me->get_button_action( 'register' ) ) . ";});\n" );
+		$this->wp->echo( 'jQuery("' . ADA_LOGOUT_ELEMENT_SELECTOR . '").click(eDemo_SSO.adalogout);' . "\n" );
+		$this->wp->echo( 'e=jQuery(".must-log-in").find("a")[0]; if(e) {e.href="' . $me->get_button_action( 'register' ) . '"};' );
+		$this->wp->echo( "</script>\n" );
 	}
 }

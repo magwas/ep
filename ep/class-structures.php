@@ -1,15 +1,15 @@
-<?php // phpcs:disable Squiz.Commenting
+<?php declare(strict_types=1);
 
 class Structures {
-    function __construct() {
-        global $EP_WORLDPRESS_INTERFACE;
-        $this->WP = & $EP_WORLDPRESS_INTERFACE;
-    }
+	function __construct() {
+		global $_ep_wordpress_interface;
+		$this->wp = & $_ep_wordpress_interface;
+	}
 	public function get_parent_by_taxonomy( $post, $taxname, $fmt ) {
-		$term_list = $this->WP->wp_get_post_terms( $post->ID, $taxname, array( 'fields' => 'all' ) );
-		$ret = '';
+		$term_list = $this->wp->wp_get_post_terms( $post->ID, $taxname, array( 'fields' => 'all' ) );
+		$ret       = '';
 		foreach ( $term_list as $term_single ) {
-			$ret .= sprintf( $fmt, $this->WP->get_site_url(), $term_single->slug, $term_single->name );
+			$ret .= sprintf( $fmt, $this->wp->get_site_url(), $term_single->slug, $term_single->name );
 		}
 		return $ret;
 	}
@@ -22,11 +22,11 @@ class Structures {
 					array(
 						'taxonomy' => $tax_name,
 						'field'    => 'slug',
-						'terms'    => [$post->post_name],
+						'terms'    => [ $post->post_name ],
 					),
 				),
 			);
-			$loop = $this->WP->WP_Query( $args );
+			$loop = $this->wp->wp_query( $args );
 			return $loop;
 	}
 
@@ -36,20 +36,21 @@ class Structures {
 		}
 		$ret = $header_string;
 		while ( $loop->have_posts() ) :
-			$ret .= $this->listOnePost ( $loop, $fmt );
+			$ret .= $this->list_one_post( $loop, $fmt );
 		endwhile;
-		$this->WP->wp_reset_postdata();
+		$this->wp->wp_reset_postdata();
 		return $ret;
 	}
 
-	private function listOnePost($loop, $fmt) {
+	private function list_one_post( $loop, $fmt ) {
 		$loop->the_post();
-		$post=$this->WP->get_post();
-		return sprintf( $fmt,
-				$this->WP->get_post_permalink($post),
-				$post->post_title,
-				$this->WP->get_the_post_thumbnail($post)
-				);
+		$post = $this->wp->get_post();
+		return sprintf(
+			$fmt,
+			$this->wp->get_post_permalink( $post ),
+			$post->post_title,
+			$this->wp->get_the_post_thumbnail( $post )
+		);
 	}
 
 
@@ -59,33 +60,34 @@ class Structures {
 	}
 
 	public function update_custom_terms( $post_id ) {
-        $post = $this->WP->get_post($post_id);
-		$post_type = $this->WP->get_post_type( $post );
-		$tax_type  = $this->figureOutTaxonomyType ( $post_type );
-		if ('' == $tax_type) {
+		$post      = $this->wp->get_post( $post_id );
+		$post_type = $this->wp->get_post_type( $post );
+		$tax_type  = $this->figure_out_taxonomy_type( $post_type );
+		if ( '' == $tax_type ) {
 			return;
 		}
 
-		$term_title = $post->post_title;
-		$term_slug  = $post->post_name;
-		$existing_terms = $this->WP->get_terms( $tax_type, ['hide_empty' => false]);
+		$term_title     = $post->post_title;
+		$term_slug      = $post->post_name;
+		$existing_terms = $this->wp->get_terms( $tax_type, [ 'hide_empty' => false ] );
 
 		foreach ( $existing_terms as $term ) {
-			if($this->mayUpdateTerm ( $post, $term, $tax_type, $term_title, $term_slug )) {
+			if ( $this->may_update_term( $post, $term, $tax_type, $term_title, $term_slug ) ) {
 				return;
 			}
 		}
 
-		$this->WP->wp_insert_term($term_title, $tax_type,
+		$this->wp->wp_insert_term(
+			$term_title, $tax_type,
 			[
 				'slug'        => $term_slug,
-				'description' => $post_id
+				'description' => $post_id,
 			]
 		);
 	}
-	private function mayUpdateTerm($post, $term, $tax_type, $term_title, $term_slug) {
+	private function may_update_term( $post, $term, $tax_type, $term_title, $term_slug ) {
 		if ( $term->description == $post->ID ) {
-			$this->WP->wp_update_term(
+			$this->wp->wp_update_term(
 				$term->term_id, $tax_type, array(
 					'name' => $term_title,
 					'slug' => $term_slug,
@@ -96,8 +98,8 @@ class Structures {
 		return false;
 	}
 
-	private function figureOutTaxonomyType($post_type) {
-		$tax_type  = '';
+	private function figure_out_taxonomy_type( $post_type ) {
+		$tax_type = '';
 		if ( 'szakkolegium' == $post_type ) {
 			$tax_type = 'szakkoli';
 		} elseif ( 'problem' == $post_type ) {
@@ -107,7 +109,7 @@ class Structures {
 	}
 
 	function init() {
-		$this->WP->add_action( 'save_post', array( $this, 'update_custom_terms' ) );
+		$this->wp->add_action( 'save_post', array( $this, 'update_custom_terms' ) );
 	}
 
 }

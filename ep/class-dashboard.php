@@ -1,4 +1,4 @@
-<?php // phpcs:disable Squiz.Commenting
+<?php declare(strict_types=1);
 
 class Dashboard {
 
@@ -23,64 +23,65 @@ EOT;
 Tag vagy, %s!
 EOT;
 
-	function __construct(  ) {
-		global $EP_WORLDPRESS_INTERFACE;
-		$this->WP = & $EP_WORLDPRESS_INTERFACE;
+	function __construct() {
+		global $_ep_wordpress_interface;
+		$this->wp = & $_ep_wordpress_interface;
 	}
-	
-    function init() {
-        $this->WP->add_shortcode('acceptrules', array( $this, 'acceptrules_shortcode' ) );
-        $this->WP->wp_enqueue_style( 'ep-css', $this->WP->plugin_dir_url( __FILE__ ) . 'assets/css/ep.css' );
-        $this->WP->wp_enqueue_script( 'ep-js', $this->WP->plugin_dir_url( __FILE__ ) . 'assets/js/ep.js', array(), EP_VERSION, false  );
-        
-    }
+
+	function init() {
+		$this->wp->add_shortcode( 'acceptrules', array( $this, 'acceptrules_shortcode' ) );
+		$this->wp->wp_enqueue_style( 'ep-css', $this->wp->plugin_dir_url( __FILE__ ) . 'assets/css/ep.css' );
+		$this->wp->wp_enqueue_script( 'ep-js', $this->wp->plugin_dir_url( __FILE__ ) . 'assets/js/ep.js', array(), EP_VERSION, false );
+
+	}
 	function unauthenticated( $user ) {
 		return 0 == $user->ID;
 	}
 
 	function has_assurance( $user ) {
-		$assurances = $this->WP->get_user_meta( $user->ID, 'eDemoSSO_assurances' );
-		if (!is_array( $assurances ) || !isset($assurances[0]))
+		$assurances = $this->wp->get_user_meta( $user->ID, 'eDemoSSO_assurances' );
+		if ( ! is_array( $assurances ) || ! isset( $assurances[0] ) ) {
 			return;
-		$splitAssurances = json_decode($assurances[0]);
-		return ( in_array( "magyar", $splitAssurances ) || in_array( "emagyar", $splitAssurances ) );
+		}
+		$split_assurances = json_decode( $assurances[0] );
+		return ( in_array( 'magyar', $split_assurances ) || in_array( 'emagyar', $split_assurances ) );
 	}
 
 	function did_accept( $user ) {
-		$accepted = $this->WP->get_user_meta( $user->ID, 'accepted_the_rules', true );
+		$accepted = $this->wp->get_user_meta( $user->ID, 'accepted_the_rules', true );
 		return $accepted;
 	}
 
 	function show_dashboard() {
-		$this->WP->echo(self::DASHBOARD_HEADER);
+		$this->wp->echo( self::DASHBOARD_HEADER );
 		$this->show_dashboard_content();
-		$this->WP->echo(self::DASHBOARD_FOOTER);
+		$this->wp->echo( self::DASHBOARD_FOOTER );
 	}
 
 	function show_dashboard_content() {
-		$user = $this->WP->wp_get_current_user();
+		$user = $this->wp->wp_get_current_user();
 		if ( $this->unauthenticated( $user ) ) {
-			$this->WP->echo(self::LOGIN);
+			$this->wp->echo( self::LOGIN );
 			return;
 		}
 		$name = $user->display_name;
 		if ( ! $this->did_accept( $user ) ) {
-			$this->WP->echo(sprintf( self::ACCEPT_THE_RULES, $name ));
+			$this->wp->echo( sprintf( self::ACCEPT_THE_RULES, $name ) );
 			return;
 		}
 		if ( ! $this->has_assurance( $user ) ) {
-			$this->WP->echo(sprintf( self::GET_ASSURANCE, $name ));
+			$this->wp->echo( sprintf( self::GET_ASSURANCE, $name ) );
 			return;
 		}
-		$this->WP->echo(sprintf( self::YOU_ARE_MEMBER, $name ));
+		$this->wp->echo( sprintf( self::YOU_ARE_MEMBER, $name ) );
 	}
-	
+
 	function acceptrules_shortcode() {
-	    $user = $this->WP->wp_get_current_user();
-	    if($this->WP->get_user_meta( $user->ID, 'accepted_the_rules' ) == []) {
-	        return '<div class="accept-shortcode"><button onclick="javascript:accept_rules()">Efogadom a szabályokat</button></div>';
-	    }
-	    return '';
+		$user = $this->wp->wp_get_current_user();
+		if ( $this->wp->get_user_meta( $user->ID, 'accepted_the_rules' ) == [] ) {
+			return '<div class="accept-shortcode"><button onclick="javascript:accept_rules()">Efogadom a szabályokat</button></div>';
+		}
+		return '';
 	}
 
 }

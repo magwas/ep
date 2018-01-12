@@ -1,23 +1,23 @@
-<?php // phpcs:disable Squiz.Commenting
+<?php declare(strict_types=1);
 
 class AcceptRules {
 
-	function __construct(  ) {
-		global $EP_WORLDPRESS_INTERFACE;
-		$this->WP = & $EP_WORLDPRESS_INTERFACE;
+	function __construct() {
+		global $_ep_wordpress_interface;
+		$this->wp = & $_ep_wordpress_interface;
 	}
-	
+
 	public function init() {
-		$this->WP->add_action( 'wp_ajax_ep_accept_rules', array( $this, 'accept_rules' ) );
+		$this->wp->add_action( 'wp_ajax_ep_accept_rules', array( $this, 'accept_rules' ) );
 	}
 
 	function accept_rules() {
-		global $EP_WORLDPRESS_INTERFACE;
-		$user = $EP_WORLDPRESS_INTERFACE->wp_get_current_user();
-		$EP_WORLDPRESS_INTERFACE->update_user_meta( $user->ID, 'accepted_the_rules', 1 );
-		$EP_WORLDPRESS_INTERFACE->echo('user=' . $user->ID);
-		$EP_WORLDPRESS_INTERFACE->echo('accepted=' . $EP_WORLDPRESS_INTERFACE->get_user_meta( $user->ID, 'accepted_the_rules', true )[0]);
-		$EP_WORLDPRESS_INTERFACE->wp_die();
+		global $_ep_wordpress_interface;
+		$user = $_ep_wordpress_interface->wp_get_current_user();
+		$_ep_wordpress_interface->update_user_meta( $user->ID, 'accepted_the_rules', 1 );
+		$_ep_wordpress_interface->echo( 'user=' . $user->ID );
+		$_ep_wordpress_interface->echo( 'accepted=' . $_ep_wordpress_interface->get_user_meta( $user->ID, 'accepted_the_rules', true )[0] );
+		$_ep_wordpress_interface->wp_die();
 	}
 }
 
