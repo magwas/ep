@@ -14,20 +14,7 @@ Ha szeretnél tagként résztvenni, <button id="login_button">Jelentkezz be!</bu
 EOT;
 
 	const ACCEPT_THE_RULES = <<<'EOT'
-<script>
-function accept_rules() {
-        var query = {
-                'action' : 'ep_accept_rules',
-        };
-        console.log(query);
-        jQuery.post('/wp-admin/admin-ajax.php', query, function(response) {
-                console.log('Got this from the server: ' + response);
-		window.location.reload();
-        });
-}
-</script>
-Kedves %s, még nem vagy tag, ehhez el kell fogadnod a szabályainkat.<br\>
-<button onclick="javascript:accept_rules()">Efogadom a szabályokat</button>
+Kedves %s, ha szavazati joggal szeretnél részt venni, el kell fogadnod <a href="https://elektoriparlament.hu/alapito-okirat">a szabályainkat</a>.<br\>
 EOT;
 	const GET_ASSURANCE    = <<<'EOT'
 Kedves %s, a regisztrálásod sikerült, már csak egy lépés van hátra: <a href="/hogyan-szerzek-magyar-vagy-emagyar-igazolast" target="blank">szerezz "magyar" vagy "emagyar" igazolást!</a>
