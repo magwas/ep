@@ -42,6 +42,10 @@ EOT;
 	}
 	
     function init() {
+        $this->WP->add_shortcode('acceptrules', array( $this, 'acceptrules_shortcode' ) );
+        $this->WP->wp_enqueue_style( 'ep-css', $this->WP->plugin_dir_url( __FILE__ ) . 'assets/css/ep.css' );
+        $this->WP->wp_enqueue_script( 'ep-js', $this->WP->plugin_dir_url( __FILE__ ) . 'assets/js/ep.js', array(), EP_VERSION, false  );
+        
     }
 	function unauthenticated( $user ) {
 		return 0 == $user->ID;
@@ -82,6 +86,14 @@ EOT;
 			return;
 		}
 		$this->WP->echo(sprintf( self::YOU_ARE_MEMBER, $name ));
+	}
+	
+	function acceptrules_shortcode() {
+	    $user = $this->WP->wp_get_current_user();
+	    if($this->WP->get_user_meta( $user->ID, 'accepted_the_rules' ) == []) {
+	        return '<div class="accept-shortcode"><button onclick="javascript:accept_rules()">Efogadom a szabályokat</button></div>';
+	    }
+	    return '';
 	}
 
 }

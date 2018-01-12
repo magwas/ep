@@ -24,6 +24,9 @@ abstract class WPTestCase extends TestCase {
     function assertScriptEnqueued($name,$path, $args, $version) {
         $this->assertEquals($this->WP->scripts[$name], [$path, $args, $version]);
     }
+    function assertStyleEnqueued($name,$path, $args, $version) {
+        $this->assertEquals($this->WP->styles[$name], $path);
+    }
     function assertDied() {
     	$this->assertTrue($this->WP->died);
     }

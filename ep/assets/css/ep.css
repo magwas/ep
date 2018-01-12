@@ -1,0 +1,14 @@
+#left-area ol {
+    padding: 0 0 23px 0;
+    line-height: 26px;
+    list-style-position: outside;
+    list-style-type: decimal;
+    margin: 10px;
+}
+ul { margin:10px;}
+
+#accept-shortcode {
+	position:fixed;
+	right:0px;
+	top:100px;
+}
