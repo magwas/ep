@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 class TestData {
 	function __construct() {
-		$this->testData = [
+		$this->test_data = [
 			'terms'       => [
 				[
 					1,

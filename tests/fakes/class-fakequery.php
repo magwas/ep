@@ -6,7 +6,7 @@ class FakeQuery {
 		$res      = [];
 		foreach ( $wp->posts as $post ) {
 			if ( $post->post_type == $args['post_type'] &&
-					$this->postContainsTerm( $post, $args['tax_query'] )
+					$this->post_contains_term( $post, $args['tax_query'] )
 					) {
 						$res[] = $post;
 			}
@@ -15,7 +15,7 @@ class FakeQuery {
 		$this->it = $obj->getIterator();
 		$this->update_post_count();
 	}
-	private function postContainsTerm( $post, $query ) {
+	private function post_contains_term( $post, $query ) {
 		foreach ( $post->get_terms( $query[0]['taxonomy'], [] ) as $term ) {
 			$field = $query[0]['field'];
 			if ( in_array( $term->$field, $query[0]['terms'] ) ) {

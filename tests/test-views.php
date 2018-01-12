@@ -1,17 +1,19 @@
-<?php declare(strict_types=1);
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
+
 include_once 'ep/class-views.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
 
-class ViewsTest extends wpTestCase {
+class ViewsTest extends WPTestCase {
 
 	public function setUp() {
 		parent::setUp();
 		$structures     = new Structures();
 		$dashboard      = new Dashboard();
 		$this->instance = new Views( $structures, $dashboard, new FakeUriGenerator() );
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 	}
 
 	public function testInitRegistersContentFilter() {

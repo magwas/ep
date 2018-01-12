@@ -11,10 +11,10 @@ class Fakewp {
 	static $instance;
 	function __construct( $testdata ) {
 		self::$instance = $this;
-		$this->buildUsers( $testdata );
+		$this->build_users( $testdata );
 		$this->current_user = $this->users[1];
-		$this->buildTaxonomies( $testdata );
-		$this->buildPosts( $testdata );
+		$this->build_taxonomies( $testdata );
+		$this->build_posts( $testdata );
 		$currentpost        = $testdata['currentpost'];
 		$this->post         = $this->posts[ $currentpost ];
 		$this->output       = '';
@@ -23,24 +23,24 @@ class Fakewp {
 		$this->current_user = $this->users[0];
 	}
 
-	private function buildUsers( $testdata ) {
+	private function build_users( $testdata ) {
 		foreach ( $testdata['users'] as $key => $user ) {
 			$user['ID']          = $key;
 			$this->users[ $key ] = new FakeUser( $user );
 		}
 	}
-	private function buildPosts( $testdata ) {
+	private function build_posts( $testdata ) {
 		foreach ( $testdata['posts'] as $key => $post ) {
 			$post['ID']          = $key;
 			$this->posts[ $key ] = new FakePost( $post );
 		}
 	}
-	private function buildTaxonomies( $testdata ) {
+	private function build_taxonomies( $testdata ) {
 		$this->taxonomy = [];
 		foreach ( $testdata['terms'] as $key => $term ) {
-			$theTerm                                = new FakeTerm( $term );
-			$this->taxonomy[ $term[1] ][ $term[0] ] = $theTerm;
-			$this->allterms[ $theTerm->term_id ]    = $theTerm;
+			$the_term                               = new FakeTerm( $term );
+			$this->taxonomy[ $term[1] ][ $term[0] ] = $the_term;
+			$this->allterms[ $the_term->term_id ]   = $the_term;
 		}
 	}
 
@@ -149,8 +149,8 @@ class Fakewp {
 		$this->updated_tax = true;
 	}
 
-	function wp_get_post_terms( $ID, $taxname ) {
-		return $this->posts[ $ID ]->get_terms( $taxname );
+	function wp_get_post_terms( $id, $taxname ) {
+		return $this->posts[ $id ]->get_terms( $taxname );
 	}
 
 	function wp_set_post_terms( $postid, $terms, $tax, $pupdate ) {
@@ -160,6 +160,8 @@ class Fakewp {
 	function is_feed() {
 		return $this->is_feed;
 	}
+
+	//phpcs:disable WordPress.WP.I18n
 	function __( $str, $class ) {
 		return $str;
 	}
@@ -172,14 +174,14 @@ class Fakewp {
 	}
 
 	function wp_create_user( $username, $password ) {
-		$userObject                     = new FakeUser(
+		$user_object                     = new FakeUser(
 			[
 				'display_name' => $username,
 				'password'     => $password,
 			]
 		);
-		$this->users[ $userObject->ID ] = $userObject;
-		return $userObject->ID;
+		$this->users[ $user_object->ID ] = $user_object;
+		return $user_object->ID;
 	}
 
 	function wp_get_current_user() {

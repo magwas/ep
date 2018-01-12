@@ -20,8 +20,8 @@ class FakePost {
 			return;
 		}
 		foreach ( $data['terms'] as $term_id ) {
-			$theTerm                             = ( FakeWp::$instance )->allterms[ $term_id ];
-			$this->terms[ $theTerm->taxonomy ][] = $theTerm;
+			$the_term                             = ( FakeWp::$instance )->allterms[ $term_id ];
+			$this->terms[ $the_term->taxonomy ][] = $the_term;
 		}
 	}
 	function get_terms( $tax ) {

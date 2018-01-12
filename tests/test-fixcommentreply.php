@@ -1,17 +1,17 @@
-<?php declare(strict_types=1);
-
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
 
 include_once 'ep/class-fixcommentreply.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
 
-class FixCommentReplyTest extends wpTestCase {
+class FixCommentReplyTest extends WPTestCase {
 
 	public function setUp() {
 		parent::setUp();
 		$this->instance = new FixCommentReply( new FakeUriGenerator() );
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 	}
 
 	public function testAcceptRulesAjaxIsRegistered() {

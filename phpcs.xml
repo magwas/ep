@@ -2,12 +2,6 @@
 <ruleset name="Coding Standards for this plugin">
  <description>For this project</description>
 
-        <rule ref="WordPress-Core">
-    		<include-pattern>./ep/*</include-pattern>
-		<exclude name="Squiz.Commenting"/>
-	</rule>
-        <rule ref="WordPress-Docs" />
-
 	<!-- Check all PHP files in directory tree by default. -->
 	<arg name="extensions" value="php"/>
 	<file>.</file>
@@ -17,5 +11,10 @@
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+    <rule ref="WordPress-Core">
+	    <exclude name="Squiz.Commenting"/>
+	</rule>
+    <rule ref="WordPress-Docs" />
+
 </ruleset>
 
