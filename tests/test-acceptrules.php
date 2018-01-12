@@ -1,18 +1,18 @@
-<?php declare(strict_types=1);
-
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
 
 include_once 'ep/class-acceptrules.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
 
-class AcceptRulesTest extends wpTestCase {
+class AcceptRulesTest extends WPTestCase {
 
 
 	public function setUp() {
 		parent::setUp();
 		$this->instance = new AcceptRules();
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 	}
 
 	public function testAcceptRules() {

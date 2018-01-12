@@ -1,19 +1,19 @@
-<?php declare(strict_types=1);
-
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
 
 require_once 'ep/class-vote.php';
 require_once 'ep/class-structures.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
-class ElektoriparlamentVoteTest extends wpTestCase {
+class ElektoriparlamentVoteTest extends WPTestCase {
 
 
 	public function setUp() {
 		parent::setUp();
 		$structures     = new Structures();
 		$this->instance = new Vote( $structures );
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 		if ( ! defined( 'EP_VERSION' ) ) {
 			define( 'EP_VERSION', '0.1.1' );
 		}

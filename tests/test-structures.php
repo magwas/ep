@@ -1,15 +1,16 @@
-<?php declare(strict_types=1);
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
 
 require_once 'ep/class-structures.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
-class ElektoriparlamentStructuresTest extends wpTestCase {
+class ElektoriparlamentStructuresTest extends WPTestCase {
 
 	public function setUp() {
 		parent::setUp();
 		$this->instance = new Structures();
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 	}
 
 	public function test_init() {
@@ -51,8 +52,10 @@ href=http://example.org/?post_type=javaslat&p=5, title=title_5, image=<img src="
 		$this->instance->update_custom_terms( 1 );
 		$found = false;
 		foreach ( $this->wp->get_terms( 'vita', array() ) as $term ) {
-			if ( $term->slug == 'vote' && $term->description == '1' && $term->name == 'title_1' ) {
-				$found = true;
+			if ( 'vote' == $term->slug &&
+				'1' == $term->description &&
+				'title_1' == $term->name ) {
+					$found = true;
 			}
 		}
 		$this->assertTrue( $found );
@@ -63,7 +66,9 @@ href=http://example.org/?post_type=javaslat&p=5, title=title_5, image=<img src="
 		$found = false;
 		$terms = $this->wp->get_terms( 'szakkoli', array() );
 		foreach ( $terms as $term ) {
-			if ( $term->slug == 'slug_8' && $term->description == '8' && $term->name == 'title_8' ) {
+			if ( 'slug_8' == $term->slug &&
+				'8' == $term->description &&
+				'title_8' == $term->name ) {
 				$found = true;
 			}
 		}

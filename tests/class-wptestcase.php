@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 include_once 'fakes/class-fakewp.php';
 
-abstract class wpTestCase extends TestCase {
+abstract class WPTestCase extends TestCase {
 
 	function setData( $testdata ) {
 		global $_ep_wordpress_interface;

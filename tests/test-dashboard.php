@@ -1,18 +1,18 @@
-<?php declare(strict_types=1);
-
+<?php // phpcs:disable WordPress.Files.FileName.InvalidClassFileName
+declare(strict_types=1);
 
 include_once 'ep/class-dashboard.php';
 require_once 'tests/class-wptestcase.php';
 require_once 'tests/class-testdata.php';
 
 
-class DashboardTest extends wpTestCase {
+class DashboardTest extends WPTestCase {
 
 
 	public function setUp() {
 		parent::setUp();
 		$this->dashboard = new Dashboard();
-		$this->setData( ( new TestData() )->testData );
+		$this->setData( ( new TestData() )->test_data );
 	}
 
 	public function testShowUnauthenticated() {
