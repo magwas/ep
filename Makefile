@@ -6,7 +6,7 @@ shippable:
 	mkdir -p shippable/codecoverage
 
 stylecheck:
-	phpcs
+	/usr/local/bin/phpcs
 
 phptests: shippable
 	phpunit --whitelist 'ep' --log-junit shippable/testresults/unit.xml --coverage-html shippable/codecoverage/coverage-unit --coverage-xml shippable/codecoverage/coverage-unit --testsuite unit
