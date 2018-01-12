@@ -1,2 +1,2 @@
 #!/bin/bash
-rsync -e "ssh -p 22022" -ar shippable/ shippable@demokracia.rulez.org:/var/www/adadocs/ep/$BUILD_NUMBER
+rsync -e "ssh -i /tmp/ssh/01_deploy -p 22022" -ar shippable/ shippable@demokracia.rulez.org:/var/www/adadocs/ep/$BUILD_NUMBER

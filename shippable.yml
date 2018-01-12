@@ -2,7 +2,10 @@ build_image: magwas/ep
 language: python
 python:
   - 2.7
-env:
+integrations:
+  sshKey:
+    - integrationName: ssh_key
+    - type: sshKey
 build:
   ci:
     - tools/script
