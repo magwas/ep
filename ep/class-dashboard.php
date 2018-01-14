@@ -73,8 +73,15 @@ EOT;
 			$this->wp->echo( sprintf( self::GET_ASSURANCE, $name ) );
 			return;
 		}
+		$this->add_membership_role_if_needed( $user );
 		$this->wp->echo( sprintf( self::YOU_ARE_MEMBER, $name ) );
 	}
+
+	private function add_membership_role_if_needed( $user ) {
+		if ( ! in_array( 'fullmember', $user->roles ) ) {
+			$user->roles[] = 'fullmember';
+		}}
+
 
 	function acceptrules_shortcode() {
 		$user = $this->wp->wp_get_current_user();
