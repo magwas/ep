@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 class FakeUser {
 	function __construct( $args = [] ) {
-		$this->meta = [];
-		$this->ID   = rand();
+		$this->meta  = [];
+		$this->ID    = rand();
+		$this->roles = [ 'subscriber' ];
 		foreach ( $args as $key => $value ) {
 			$this->$key = $value;
 		}

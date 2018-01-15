@@ -16,6 +16,11 @@ abstract class TestBase extends wp_UnitTestCase {
 		);
 	}
 
+	public function test_user_roles() {
+		$user = $this->wp->wp_get_current_user();
+		$this->assertEquals( [ 'subscriber' ], $user->roles );
+	}
+
 	public function test___() {
 		$this->assertEquals( 'lorum ipse', $this->wp->__( 'lorum ipse', 'ep' ) );
 	}
