@@ -1,5 +1,5 @@
 
-all: stylecheck phptests itests
+all: stylecheck phptests itests jstest
 
 shippable:
 	mkdir -p shippable/testresults
@@ -19,3 +19,11 @@ itests: shippable /var/run/mysqld/mysqld.pid
 
 testenv:
 	docker run -v $$(pwd):/ep -w /ep -it magwas/ep /bin/bash
+
+node_modules:
+	ln -sf /usr/local/lib/node_modules .
+jsbuild: node_modules
+	rm -rf dist ; npm run build
+
+jstest: jsbuild
+	mocha dist/tests.js
