@@ -86,7 +86,7 @@ EOT;
 	function acceptrules_shortcode() {
 		$user = $this->wp->wp_get_current_user();
 		if ( $this->wp->get_user_meta( $user->ID, 'accepted_the_rules' ) == [] ) {
-			return '<div class="accept-shortcode"><button onclick="javascript:accept_rules()">Efogadom a szabályokat</button></div>';
+			return '<div class="accept-shortcode"><button onclick="javascript:ep.ajax.accept_rules()">Efogadom a szabályokat</button></div>';
 		}
 		return '';
 	}
