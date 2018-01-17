@@ -94,7 +94,7 @@ function VoteSlider(id, choices) {
 		parent = document.getElementById("vote-container-"+id);
 		self.parent = parent;
 		self.allHeight = parent.clientHeight;
-		self.alternativeHeight = 40;//in css, multiple places
+		self.alternativeHeight = 40;// in css, multiple places
 		self.multiplier = (self.allHeight - self.alternativeHeight)/self.allHeight;
 		console.log('height=' + self.allHeight);
 		self.alternativesParent = document.getElementById('vote-alternatives-' + id);
@@ -126,4 +126,4 @@ function VoteSlider(id, choices) {
 		initDom();
 	}
 }
-
+export default VoteSlider;
