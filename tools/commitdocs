@@ -1,6 +1,5 @@
 #!/bin/bash
 set -xe
 branch=${TRAVIS_BRANCH}
-mkdir -p shippable/$branch
-#mv doc/* shippable/$branch
-rsync -e "ssh -i /tmp/ssh/01_deploy -p 22022" -ar shippable/ shippable@demokracia.rulez.org:/var/www/adadocs/ep
+rsync -e "ssh -i /tmp/ssh/01_deploy -p 22022" -ar shippable/ shippable@demokracia.rulez.org:/var/www/adadocs/ep/$BUILD_NUMBER
+ssh -i /tmp/ssh/01_deploy -p 22022 "ln -sf /var/www/adadocs/ep/$BUILD_NUMBER /var/www/adadocs/ep/$branch"
