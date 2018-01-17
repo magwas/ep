@@ -22,8 +22,9 @@ testenv:
 
 node_modules:
 	ln -sf /usr/local/lib/node_modules .
+
 jsbuild: node_modules
 	rm -rf dist ; npm run build
 
-jstest: jsbuild
-	mocha dist/tests.js
+jstest: node_modules
+	mocha -b --require babel-core/register es6tests

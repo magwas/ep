@@ -80,7 +80,7 @@ class DashboardTest extends WPTestCase {
 		$this->assertTrue( true );
 	}
 	public function test_acceptrules_shortcode() {
-		$shortcode = '<div class="accept-shortcode"><button onclick="javascript:accept_rules()">Efogadom a szabályokat</button></div>';
+		$shortcode = '<div class="accept-shortcode"><button onclick="javascript:ep.ajax.accept_rules()">Efogadom a szabályokat</button></div>';
 		$this->assertEquals( $shortcode, $this->dashboard->acceptrules_shortcode() );
 	}
 
