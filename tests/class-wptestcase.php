@@ -30,4 +30,16 @@ abstract class WPTestCase extends TestCase {
 	function assertDied() {
 		$this->assertTrue( $this->wp->died );
 	}
+	function assertstringContains( $expected, $actual ) {
+		$this->assertTrue(
+			strpos( $actual, $expected ) !== false,
+			sprintf( "no '%s' in '%s'", $expected, $actual )
+		);
+	}
+	function assertstringNotContains( $expected, $actual ) {
+		$this->assertTrue(
+			strpos( $actual, $expected ) == false,
+			sprintf( "found '%s' in '%s'", $expected, $actual )
+		);
+	}
 }

@@ -23,6 +23,8 @@ EOT;
 Tag vagy, %s!
 EOT;
 
+	const JOIN_BUTTON = '<button class="szakkol-join-button" onClick="javascript:ep.ajax.joinSzakkol(%s)"/>';
+
 	function __construct() {
 		global $_ep_wordpress_interface;
 		$this->wp = & $_ep_wordpress_interface;
@@ -75,13 +77,27 @@ EOT;
 		}
 		$this->add_membership_role_if_needed( $user );
 		$this->wp->echo( sprintf( self::YOU_ARE_MEMBER, $name ) );
+		$this->show_join_button( $user );
+	}
+
+	private function show_join_button( $user ) {
+		$post = $this->wp->get_post();
+		if ( 'szakkolegium' == $post->post_type ) {
+			$wrapped_meta = $this->wp->get_post_meta( $post->ID, 'members' );
+			if ( isset( $wrapped_meta[0] ) ) {
+				$post_meta = $wrapped_meta[0];
+				if ( is_array( $post_meta ) && in_array( $user->ID, $post_meta ) ) {
+					return;
+				}
+			}
+			$this->wp->echo( sprintf( self::JOIN_BUTTON, $post->post_name ) );
+		}
 	}
 
 	private function add_membership_role_if_needed( $user ) {
 		if ( ! in_array( 'fullmember', $user->roles ) ) {
 			$user->roles[] = 'fullmember';
 		}}
-
 
 	function acceptrules_shortcode() {
 		$user = $this->wp->wp_get_current_user();

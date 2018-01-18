@@ -18,6 +18,7 @@ class AcceptRulesTest extends WPTestCase {
 	public function testAcceptRules() {
 		$this->wp->wp_set_current_user( 1 );
 		$this->assertEquals( array(), $this->wp->get_user_meta( 1, 'accepted_the_rules' ) );
+		$this->expectException( wpDieException::class );
 		$this->instance->accept_rules();
 		$this->assertEquals( 'user=1accepted=1', $this->wp->output );
 		$this->assertDied();

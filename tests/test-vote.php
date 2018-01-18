@@ -37,7 +37,7 @@ class ElektoriparlamentVoteTest extends WPTestCase {
 		$result = $this->instance->vote_shortcode();
 		$rows   = '';
 		foreach ( [ 2, 4, 5 ] as $postid ) {
-			$rows .= sprintf( Vote::ALTERNATIVE_ROW, 'title_' . $postid, 'slug_' . $postid );
+			$rows .= sprintf( Vote::ALTERNATIVE_ROW, 'title_' . $postid, 'slug-' . $postid );
 		}
 		$this->assertEquals( sprintf( Vote::FORM_HTML, 1, $rows ), $result );
 	}
@@ -51,6 +51,7 @@ class ElektoriparlamentVoteTest extends WPTestCase {
 	public function test_vote_submit() {
 		global $_POST;
 		$_POST = [ 'data' => 'foo' ];
+		$this->expectException( wpDieException::class );
 		$this->instance->vote_submit();
 		$this->assertDied();
 		$this->assertEquals( 'hello!foo', $this->wp->output );

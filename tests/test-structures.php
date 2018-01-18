@@ -27,7 +27,7 @@ class ElektoriparlamentStructuresTest extends WPTestCase {
 	public function test_get_parent_by_taxonomy_szakkol_case() {
 		$post   = $this->wp->get_post( 1 );
 		$result = $this->instance->get_parent_by_taxonomy( $post, 'szakkoli', 'A <a href="%s/problem/%s">%s</a> szakkolihoz tartozik.' );
-		$this->assertEquals( 'A <a href="http://example.org/problem/slug_6">An unknown post</a> szakkolihoz tartozik.', $result );
+		$this->assertEquals( 'A <a href="http://example.org/problem/slug-6">An unknown post</a> szakkolihoz tartozik.', $result );
 	}
 
 	public function test_get_children_by_taxonomy() {
@@ -66,7 +66,7 @@ href=http://example.org/?post_type=javaslat&p=5, title=title_5, image=<img src="
 		$found = false;
 		$terms = $this->wp->get_terms( 'szakkoli', array() );
 		foreach ( $terms as $term ) {
-			if ( 'slug_8' == $term->slug &&
+			if ( 'slug-8' == $term->slug &&
 				'8' == $term->description &&
 				'title_8' == $term->name ) {
 				$found = true;

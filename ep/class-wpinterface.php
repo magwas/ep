@@ -97,7 +97,7 @@ class WPInterface {
 	}
 	function get_post_data() {
 		global $_POST;
-		return $_POST['data'];
+		return $_POST;
 	}
 	function wp_die() {
 		wp_die();
@@ -116,5 +116,17 @@ class WPInterface {
 	}
 	function wp_set_current_user( $user_id ) {
 		return wp_set_current_user( $user_id );
+	}
+
+	function update_post_meta( $postid, $key, $value ) {
+		return update_post_meta( $postid, $key, $value );
+	}
+
+	function get_post_meta( $postid, $key ) {
+		return get_post_meta( $postid, $key );
+	}
+
+	function get_posts( $args ) {
+		return get_posts( $args );
 	}
 }
