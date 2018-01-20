@@ -31,9 +31,6 @@ describe('Ajax class', function(){
 			assert.ok("defaultCallback" in ajax);
 			assert.equal(ajax.defaultCallback,fjq.callback); 
 		})
-		it('reloads the page when sends the callback', function(){
-			assert.ok(fakeWindow.location.reloaded);
-		})
 	})
 
 	var response = "hello world";
@@ -44,6 +41,9 @@ describe('Ajax class', function(){
 		});
 		it('logs its response to the console', function (){
 			assert.equal(fakeConsole.logged,'server response:'+response);
+		})
+		it('reloads the page', function(){
+			assert.ok(fakeWindow.location.reloaded);
 		})
 	})
 });

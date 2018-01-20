@@ -3,7 +3,7 @@
 class Dashboard {
 
 	const DASHBOARD_HEADER = <<<'EOT'
-<div class="ep_dashboard" style="background-color:#E5E5FF;text-align: center;">
+<div id="ep_dashboard" class="ep_dashboard" style="background-color:#E5E5FF;text-align: center;">
 EOT;
 	const DASHBOARD_FOOTER = <<<'EOT'
 </div>
@@ -14,7 +14,7 @@ Ha szeretnél tagként résztvenni, <button id="login_button">Jelentkezz be!</bu
 EOT;
 
 	const ACCEPT_THE_RULES = <<<'EOT'
-Kedves %s, ha szavazati joggal szeretnél részt venni, el kell fogadnod <a href="https://elektoriparlament.hu/alapito-okirat">a szabályainkat</a>.<br\>
+Kedves %s, ha szavazati joggal szeretnél részt venni, el kell fogadnod <a href="/alapito-okirat">a szabályainkat</a>.<br\>
 EOT;
 	const GET_ASSURANCE    = <<<'EOT'
 Kedves %s, a regisztrálásod sikerült, már csak egy lépés van hátra: <a href="/hogyan-szerzek-magyar-vagy-emagyar-igazolast" target="blank">szerezz "magyar" vagy "emagyar" igazolást!</a>
@@ -23,7 +23,9 @@ EOT;
 Tag vagy, %s!
 EOT;
 
-	const JOIN_BUTTON = '<button class="szakkol-join-button" onClick="javascript:ep.ajax.joinSzakkol(%s)"/>';
+	const ACCEPTRULES_SHORTCODE = '<div id="ep_acceptrules" class="accept-shortcode"><button onclick="javascript:ep.ajax.acceptRules()">Efogadom a szabályokat</button></div>';
+
+	const JOIN_BUTTON = '<button class="szakkol-join-button" onClick="javascript:ep.ajax.joinSzakkol(%s)">Belépek a szakkolégiumba</button>';
 
 	function __construct() {
 		global $_ep_wordpress_interface;
@@ -33,7 +35,7 @@ EOT;
 	function init() {
 		$this->wp->add_shortcode( 'acceptrules', array( $this, 'acceptrules_shortcode' ) );
 		$this->wp->wp_enqueue_style( 'ep-css', $this->wp->plugin_dir_url( __FILE__ ) . 'assets/css/ep.css' );
-		$this->wp->wp_enqueue_script( 'ep-js', $this->wp->plugin_dir_url( __FILE__ ) . 'assets/js/ep.js', array(), EP_VERSION, false );
+		$this->wp->wp_enqueue_script( 'ep-js', $this->wp->plugin_dir_url( __FILE__ ) . 'assets/js/ep.js', array( 'jquery' ), EP_VERSION, false );
 
 	}
 	function unauthenticated( $user ) {
@@ -102,7 +104,7 @@ EOT;
 	function acceptrules_shortcode() {
 		$user = $this->wp->wp_get_current_user();
 		if ( $this->wp->get_user_meta( $user->ID, 'accepted_the_rules' ) == [] ) {
-			return '<div class="accept-shortcode"><button onclick="javascript:ep.ajax.accept_rules()">Efogadom a szabályokat</button></div>';
+			return self::ACCEPTRULES_SHORTCODE;
 		}
 		return '';
 	}
