@@ -22,6 +22,7 @@ include_once 'class-views.php';
 include_once 'class-vote.php';
 include_once 'class-acceptrules.php';
 include_once 'class-fixcommentreply.php';
+include_once 'class-szakkol.php';
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
@@ -35,6 +36,8 @@ function ep_bootstrap() {
 		$structures  = new Structures();
 		$acceptrules = new AcceptRules( $structures );
 		$acceptrules->init();
+		$szakkol = new Szakkol();
+		$szakkol->init();
 		return;
 	}
 	if ( version_compare( PHP_VERSION, '7.0.0', '>=' ) ) {

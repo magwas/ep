@@ -14,6 +14,42 @@ abstract class TestBase extends wp_UnitTestCase {
 				'post_type'  => 'post',
 			)
 		);
+		$p             = $this->wp->wp_insert_post(
+			array(
+				'post_name'   => 'slug-8',
+				'post_title'  => 'szakkol-test',
+				'post_date'   => '2008-03-04 00:00:00',
+				'post_type'   => 'szakkolegium',
+				'post_status' => 'publish',
+			)
+		);
+	}
+
+	public function test_wp_die() {
+		$this->setExpectedException( 'wpDieException' );
+		$this->wp->wp_die();
+	}
+
+	public function test_get_posts() {
+		$args  = array(
+			'name'        => 'slug-8',
+			'post_type'   => 'szakkolegium',
+			'post_status' => 'publish',
+			'numberposts' => 1,
+		);
+		$posts = $this->wp->get_posts( $args );
+		$this->assertEquals( 'slug-8', $posts[0]->post_name );
+	}
+
+	public function test_post_meta() {
+		$this->wp->update_post_meta( $this->post_id, 'members', [ 12, 13 ] );
+		$meta = $this->wp->get_post_meta( $this->post_id, 'members' );
+		$this->assertEquals( $meta, [ [ 12, 13 ] ] );
+	}
+
+	public function test_post_meta_empty() {
+		$meta = $this->wp->get_post_meta( $this->post_id, 'members' );
+		$this->assertEquals( $meta, [] );
 	}
 
 	public function test_user_roles() {
@@ -26,8 +62,8 @@ abstract class TestBase extends wp_UnitTestCase {
 	}
 	public function test_get_post_data() {
 		global $_POST;
-		$_POST['data'] = 'something';
-		$this->assertEquals( 'something', $this->wp->get_post_data() );
+		$_POST['somewhere'] = 'something';
+		$this->assertEquals( [ 'somewhere' => 'something' ], $this->wp->get_post_data() );
 	}
 	public function test_is_feed() {
 		$this->assertFalse( $this->wp->is_feed() );
@@ -42,26 +78,44 @@ abstract class TestBase extends wp_UnitTestCase {
 		$this->assertEquals( 42, $this->wp->get_user_meta( $user->ID, 'metavar' )[0] );
 	}
 	public function test_get_terms() {
-		$this->wp->wp_insert_term(
-			'foo', 'szakkol', [
-				'slug'        => 'slugka',
+		$the_slug  = 'slugka';
+		$term_name = 'foo';
+		$term_id   = $this->wp->wp_insert_term(
+			$term_name, 'szakkoli', [
+				'slug'        => $the_slug,
 				'description' => 'bar',
 			]
-		);
-		$r = $this->wp->get_terms( 'szakkol', [ 'hide_empty' => false ] );
-		$this->assertEquals( 1, count( $r ) );
-		$this->assertEquals( 'slugka', $r[0]->slug );
-		$this->assertEquals( 'bar', $r[0]->description );
-		$this->assertEquals( 'foo', $r[0]->name );
+		)['term_id'];
+		$r         = $this->wp->get_terms( 'szakkoli', [ 'hide_empty' => false ] );
+		$this->assertTermExists( $term_id, $the_slug, $term_name, $r );
 		$r3 = $this->wp->wp_update_term(
-			$r[0]->term_id, 'szakkol', array(
+			$term_id, 'szakkoli', array(
 				'name' => 'newname',
 				'slug' => 'newslug',
 			)
 		);
-		$r2 = $this->wp->get_terms( 'szakkol', [ 'hide_empty' => false ] );
-		$this->assertEquals( 'newname', $r2[0]->name );
-		$this->assertEquals( 'newslug', $r2[0]->slug );
+		$r2 = $this->wp->get_terms( 'szakkoli', [ 'hide_empty' => false ] );
+		$this->assertTermExists( $term_id, 'newslug', 'newname', $r2 );
+	}
+
+	private function assertTermExists( $term_id, $term_slug, $term_name, $r ) {
+		$found = false;
+		foreach ( $r as $term ) {
+			if ( $term->term_id != $term_id ) {
+				continue;
+			}
+			$this->assertEquals( $term_slug, $term->slug );
+			$this->assertEquals( 'bar', $term->description );
+			$this->assertEquals( $term_name, $term->name );
+			$found = true;
+		}
+		$this->assertTrue( $found );
+	}
+
+	public function test_get_post_terms() {
+		$r     = $this->wp->wp_set_post_terms( $this->post_id, [ 'egy' ], 'szakkoli', true );
+		$terms = $this->wp->wp_get_post_terms( $this->post_id, 'szakkoli' );
+		$this->assertEquals( $r[0], $terms[0]->term_id );
 	}
 
 	public function test_post_addition() {
@@ -99,25 +153,19 @@ abstract class TestBase extends wp_UnitTestCase {
 		$this->assertEquals( 'http://example.org/wp-content/plugins/', $url );
 	}
 
-	public function test_get_post_terms() {
-		$r     = $this->wp->wp_set_post_terms( $this->post_id, [ 'egy' ], 'szakkol', true );
-		$terms = $this->wp->wp_get_post_terms( $this->post_id, 'szakkol' );
-		$this->assertEquals( $r[0], $terms[0]->term_id );
-	}
-
 	public function test_get_site_url() {
 		$this->assertEquals( 'http://example.org', $this->wp->get_site_url() );
 	}
 
 	public function test_wp_query() {
-		$r = $this->wp->wp_set_post_terms( $this->post_id, [ 'ketto' ], 'szakkol', true );
+		$r = $this->wp->wp_set_post_terms( $this->post_id, [ 'ketto' ], 'szakkoli', true );
 		$this->wp->wp_publish_post( $this->post_id );
 		$args = array(
 			'post_type'      => 'post',
 			'posts_per_page' => -1,
 			'tax_query'      => array(
 				array(
-					'taxonomy' => 'szakkol',
+					'taxonomy' => 'szakkoli',
 					'field'    => 'slug',
 					'terms'    => [ 'ketto' ],
 				),

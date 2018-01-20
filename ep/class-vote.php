@@ -45,7 +45,7 @@ EOT;
 
 	function vote_submit() {
 		$this->wp->echo( 'hello!' );
-		$this->wp->echo( $this->wp->get_post_data() );
+		$this->wp->echo( $this->wp->get_post_data()['data'] );
 		$this->wp->wp_die();
 	}
 

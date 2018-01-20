@@ -5,10 +5,19 @@ class FakeQuery {
 		$this->wp = $wp;
 		$res      = [];
 		foreach ( $wp->posts as $post ) {
-			if ( $post->post_type == $args['post_type'] &&
-					$this->post_contains_term( $post, $args['tax_query'] )
-					) {
+			if ( $post->post_type == $args['post_type'] ) {
+				if ( isset( $args['tax_query'] ) ) {
+					if ( $this->post_contains_term( $post, $args['tax_query'] ) ) {
 						$res[] = $post;
+					}
+				} else {
+					if ( isset( $args['name'] ) ) {
+						if ( ! ( $args['name'] == $post->post_name ) ) {
+							continue;
+						}
+					}
+					$res[] = $post;
+				}
 			}
 		}
 		$obj      = new ArrayObject( $res );

@@ -15,10 +15,6 @@ class FakewpTest extends TestBase {
 			$post->data['thumbnail'] = '/tmp/foo.jpg';
 		}
 	}
-	public function test_wp_die() {
-		$this->wp->wp_die();
-		$this->assertTrue( $this->wp->died );
-	}
 
 	public function test_echo() {
 		$this->wp->echo( 'hello' );
