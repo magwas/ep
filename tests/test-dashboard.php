@@ -55,8 +55,7 @@ class DashboardTest extends WPTestCase {
 	}
 
 	public function test_acceptrules_shortcode() {
-		$shortcode = '<div class="accept-shortcode"><button onclick="javascript:ep.ajax.accept_rules()">Efogadom a szabályokat</button></div>';
-		$this->assertEquals( $shortcode, $this->dashboard->acceptrules_shortcode() );
+		$this->assertEquals( Dashboard::ACCEPTRULES_SHORTCODE, $this->dashboard->acceptrules_shortcode() );
 	}
 
 	public function test_acceptrules_shortcode_for_accepting_user() {
@@ -82,7 +81,7 @@ class DashboardTest extends WPTestCase {
 
 	public function test_ep_js_is_enqueued() {
 		$this->dashboard->init();
-		$this->assertScriptEnqueued( 'ep-js', 'http://example.org/wp-content/plugins/assets/js/ep.js', array(), EP_VERSION, false );
+		$this->assertScriptEnqueued( 'ep-js', 'http://example.org/wp-content/plugins/assets/js/ep.js', [ 'jquery' ], EP_VERSION, false );
 	}
 }
 

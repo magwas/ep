@@ -1,0 +1,15 @@
+#!/bin/bash
+set -xe
+cp testsetup/testsetup.php /var/www/wordpress/wp-content/plugins/
+rm -rf /var/www/wordpress/wp-content/plugins/eDemo-SSOauth
+rm -rf /var/www/wordpress/wp-content/plugins/ep
+ln -s /usr/local/wp_PDOauth_plugin/eDemo-SSOauth /var/www/wordpress/wp-content/plugins/eDemo-SSOauth
+wp --allow-root --path=/var/www/wordpress/ plugin activate testsetup
+wp --allow-root --path=/var/www/wordpress/ plugin activate eDemo-SSOauth
+wp --allow-root --path=/var/www/wordpress/ plugin install $(pwd)/shippable/ep.zip
+wp --allow-root --path=/var/www/wordpress/ plugin activate ep
+wp --allow-root --path=/var/www/wordpress/ user update 1 --user_pass=password
+wp --allow-root --path=/var/www/wordpress/ post create --post_type=szakkolegium --post_title='Teszt Szakkol' --post_status=publish --post_name=test-szakkol
+wp --allow-root --path=/var/www/wordpress/ rewrite structure '/%year%/%monthnum%/%day%/%postname%/'
+./tools/wpreaddobjs
+

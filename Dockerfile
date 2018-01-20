@@ -40,5 +40,7 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckod
 RUN tar xzf geckodriver-v0.19.1-linux64.tar.gz
 RUN mv geckodriver /usr/local/bin
 RUN rm geckodriver-v0.19.1-linux64.tar.gz
+RUN cd /ep;composer install
+RUN mv /ep/vendor /usr/local/lib
 
 

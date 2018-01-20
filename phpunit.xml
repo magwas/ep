@@ -15,5 +15,8 @@
 		<testsuite name="integration">
 			<directory prefix="test-" suffix=".php">./integrationtests/</directory>
 		</testsuite>
+		<testsuite name="e2e">
+			<directory prefix="test-" suffix=".php">./e2e/</directory>
+		</testsuite>
 	</testsuites>
 </phpunit>

@@ -5,6 +5,7 @@ class Ajax {
 		this.window = window;
 		this.defaultCallback = (response) => {
 			this.console.log("server response:" + response)
+			this.window.location.reload();		
 		}
 	}
 	copyfields(query,data) {
@@ -21,7 +22,6 @@ class Ajax {
         this.copyfields(query,data);
         this.console.log(query);
 		this.jquery.post('/wp-admin/admin-ajax.php', query, this.defaultCallback);
-		this.window.location.reload();		
 	}
 	acceptRules() {
 		this.query('ep_accept_rules');

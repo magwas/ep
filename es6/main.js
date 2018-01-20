@@ -1,6 +1,6 @@
 import Ajax from './Ajax.js';
 import "./voteslider";
 
-ep = {
-	ajax: new Ajax(JQuery,console,window),
+window.ep = {
+	ajax: new Ajax(jQuery,console,window),
 }
