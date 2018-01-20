@@ -9,3 +9,5 @@ package-lock.json
 .settings/
 ep/assets/js/
 core
+vendor/
+vendor
