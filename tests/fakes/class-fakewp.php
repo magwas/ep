@@ -21,8 +21,16 @@ class Fakewp {
 		$this->updated_tax  = false;
 		$this->is_feed      = false;
 		$this->current_user = $this->users[0];
+		$this->status_code  = 200;
+		if ( ! class_exists( 'wpDieException' ) ) {
+			eval( 'class wpDieException extends Exception { }' ); // phpcs:disable Squiz.PHP.Eval.Discouraged
+			$GLOBALS['wpDieException'] = 'wpDieException';
+		}
 	}
 
+	function status_header( $status ) {
+		$this->status_code = '' . $status;
+	}
 	private function build_users( $testdata ) {
 		foreach ( $testdata['users'] as $key => $user ) {
 			$user['ID']          = $key;
@@ -143,6 +151,7 @@ class Fakewp {
 		$term         = new FakeTerm( $args );
 		$this->taxonomy[ $tax_type ][ $term->term_id ] = $term;
 		$this->updated_tax                             = true;
+		return [ 'term_id' => $args[0] ];
 	}
 	function wp_update_term( $term_id, $tax_type, $args ) {
 		$this->taxonomy[ $tax_type ][ $term_id ]->update( $args );
@@ -167,10 +176,11 @@ class Fakewp {
 	}
 	function get_post_data() {
 		global $_POST;
-		return $_POST['data'];
+		return $_POST;
 	}
 	function wp_die() {
 		$this->died = true;
+		throw new wpDieException( 'wp_die' );
 	}
 
 	function wp_create_user( $username, $password ) {
@@ -195,7 +205,32 @@ class Fakewp {
 	}
 	function wp_set_current_user( $user_id ) {
 		$this->current_user = $this->users[ $user_id ];
+	}
 
+	function update_post_meta( $postid, $key, $value ) {
+		$post               = $this->get_post( $postid );
+		$post->meta[ $key ] = $value;
+	}
+
+	function get_post_meta( $postid, $key ) {
+		$post = $this->get_post( $postid );
+		if ( ( ! isset( $post->meta ) ) || ( ! isset( $post->meta[ $key ] ) ) ) {
+			return [];
+		}
+		return [ $post->meta[ $key ] ];
+	}
+
+	function get_posts( $args ) {
+		$r     = [];
+		$query = $this->wp_query( $args );
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$r[] = $this->get_post();
+			}
+		}
+		$this->wp_reset_postdata();
+		return $r;
 	}
 }
 

@@ -1,5 +1,5 @@
 
-all: stylecheck phptests itests jstest
+all: deliver
 
 shippable:
 	mkdir -p shippable/testresults
@@ -28,3 +28,7 @@ jsbuild: node_modules
 
 jstest: node_modules
 	mocha -b --require babel-core/register es6tests
+
+deliver: shippable jsbuild stylecheck phptests itests jstest
+	zip -r shippable/ep.zip ep
+
