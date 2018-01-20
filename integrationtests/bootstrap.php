@@ -17,7 +17,8 @@ if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
 
 // Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
-require '/tmp/wordpress/wp-content/plugins/eDemo-SSOauth/includes/class_edemo-ssoauth_base.php';
+require_once '/tmp/wordpress/wp-content/plugins/eDemo-SSOauth/includes/class_edemo-ssoauth.php';
+require_once '/tmp/wordpress/wp-content/plugins/eDemo-SSOauth/includes/class_edemo-ssoauth_base.php';
 
 /**
  * Manually load the plugin being tested.
