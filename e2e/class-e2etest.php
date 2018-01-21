@@ -38,12 +38,16 @@ class E2eTest extends PHPUnit_Extensions_Selenium2TestCase {
 			}, $timeout
 		);
 		$this->waitUntil(
-		    function () {
-		        $readyState = $this->execute(['script' => 'return document.readyState', 'args' => []]);
-		        print_r($readyState);
-                return $readyState=="complete";
-		    }, $timeout
-		    );
+			function () {
+				$ready_state = $this->execute(
+					[
+						'script' => 'return document.readyState',
+						'args'   => [],
+					]
+				);
+				return 'complete' == $ready_state;
+			}, $timeout
+		);
 	}
 	protected function wait_user() {
 		fwrite( STDERR, "\n\nWaiting for you\n\n" );
