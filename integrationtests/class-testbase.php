@@ -25,6 +25,10 @@ abstract class TestBase extends wp_UnitTestCase {
 		);
 	}
 
+	public function test_status_header() {
+		$this->wp->status_header( 400 );
+		$this->assertEquals( '400', $this->wp->status_code );
+	}
 	public function test_wp_die() {
 		$this->setExpectedException( 'wpDieException' );
 		$this->wp->wp_die();
