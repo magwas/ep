@@ -20,7 +20,7 @@ class Operations extends E2eTest {
 	protected function accept_rules() {
 		$this->waitForPageReload(
 			function () {
-				$this->byXPath( "//*[@id='ep_acceptrules']" )->click();
+				$this->byXPath( "//*[@id='ep_acceptrules']/button" )->click();
 			}, 10000
 		);
 		$this->dashboard_link = $this->byXPath( "//*[@id='ep_dashboard']/a" );

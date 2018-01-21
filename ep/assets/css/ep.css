@@ -8,8 +8,28 @@
 ul { margin:10px;}
 
 .accept-shortcode {
-	position:fixed;
-	right:0px;
-	top:100px;
-	z-index: 5;
+}
+
+.ep_dashboard {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+}
+
+.ep_acceptrules {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.szakkol-join-button {
+	display: block;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#login_button {
+	display: block;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
 }
