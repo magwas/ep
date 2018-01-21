@@ -4,7 +4,7 @@
 	Plugin Name: Elektori Parlament
 	Plugin URI: http://elektoriparlament.hu
 	description: Az elektori parlament cuccai
-	Version: 0.1.0
+	Version: 0.1.1
 	Author: Magosányi Árpád <m4gw4s@gmail.com>
 	License: GPL2
 */
@@ -31,7 +31,7 @@ ep_bootstrap();
 
 function ep_bootstrap() {
 
-	$plugin_version = '0.1.0';
+	$plugin_version = '0.1.1';
 	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$structures  = new Structures();
 		$acceptrules = new AcceptRules( $structures );
