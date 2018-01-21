@@ -25,7 +25,7 @@ EOT;
 
 	const ACCEPTRULES_SHORTCODE = '<div id="ep_acceptrules" class="accept-shortcode"><button onclick="javascript:ep.ajax.acceptRules()">Efogadom a szabályokat</button></div>';
 
-	const JOIN_BUTTON = '<button class="szakkol-join-button" onClick="javascript:ep.ajax.joinSzakkol(%s)">Belépek a szakkolégiumba</button>';
+	const JOIN_BUTTON = '<button class="szakkol-join-button" onClick="javascript:ep.ajax.joinSzakkol(\'%s\')">Belépek a szakkolégiumba</button>';
 
 	function __construct() {
 		global $_ep_wordpress_interface;

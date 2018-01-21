@@ -129,4 +129,10 @@ class WPInterface {
 	function get_posts( $args ) {
 		return get_posts( $args );
 	}
+
+	function status_header( $code ) {
+		$this->status_code = '' . $code;
+		return status_header( $code );
+	}
+
 }

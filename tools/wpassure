@@ -1,0 +1,5 @@
+#!/bin/bash
+set -xe
+wp --allow-root --path=/var/www/wordpress/ user meta add bob eDemoSSO_ID randomstring
+wp --allow-root --path=/var/www/wordpress/ user meta add bob eDemoSSO_assurances '["magyar"]'
+
